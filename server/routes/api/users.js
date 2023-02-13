@@ -1,7 +1,9 @@
 // routes/api/users.js
 
 const express = require('express');
-const router = express.Router();
+//const router = express.Router();
+var app = express();
+app.use(express.json());
 
 // Load User model
 const User = require('../../models/User');
@@ -9,7 +11,7 @@ const User = require('../../models/User');
 // @route GET api/users
 // @description Get all users
 // @access Public
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   console.log(req.body)
   User.find()
     .then(users => res.json(users))
@@ -19,7 +21,7 @@ router.get('/', (req, res) => {
 // @route GET api/users/:email
 // @description Get single user by email
 // @access Public
-router.get('/:email', (req, res) => {
+app.get('/:email', (req, res) => {
   User.findById(req.params.email)
     .then(user => res.json(user))
     .catch(err => res.status(404).json({ nouserfound: 'No User found' }));
@@ -28,11 +30,11 @@ router.get('/:email', (req, res) => {
 // @route POST api/users
 // @description add/save user
 // @access Public
-router.post('/', (req, res) => {
+app.post('/', (req, res) => {
   console.log(req.body)
   User.create(req.body)
     .then(user => res.json({ msg: 'User added successfully' }))
     .catch(err => res.status(400).json({ error: 'Unable to add this user' }));
 });
 
-module.exports = router;
+module.exports = app;

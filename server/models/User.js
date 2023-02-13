@@ -29,7 +29,7 @@ const UserSchema = new mongoose.Schema({
   },
   extra_information: {
     type: String,
-    required: true
+    required: false
   }
 });
 
