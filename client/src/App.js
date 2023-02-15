@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Starting from "./pages/Starting"
-import CreateTeam from "./pages/CreateTeam"
+import CreateAccount from "./pages/CreateAccount"
 import JoinTeam from "./pages/JoinTeam"
 
 
@@ -12,7 +12,7 @@ function App() {
   return (
     <Routes>
       <Route path='/' element={<Starting />} />
-      <Route path='/create' element={<CreateTeam />} />
+      <Route path='/create' element={<CreateAccount />} />
       <Route path='/join' element={<JoinTeam />} />
 
 
