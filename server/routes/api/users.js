@@ -28,6 +28,13 @@ app.get('/:id', (req, res) => {
 // @route POST api/users
 // @description Create a new user
 // @access Public
+// @param {String} first_name
+// @param {String} last_name
+// @param {String} email
+// @param {String} address
+// @param {[String]} skills
+// @param {[String]} project_preferences
+// @param {String} [extra_information]
 app.post('/', (req, res) => {
   User.create(req.body)
     .then(user => res.json({ msg: 'User ' + user.id + ' added successfully' }))
