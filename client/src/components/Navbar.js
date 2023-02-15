@@ -11,6 +11,9 @@ export default function Navbar() {
   function handleClick() {
     navigate("/");
   }
+  function profile() {
+    navigate("/profile")
+  }
 
   return (
     <div className="bg-green py-4">
@@ -24,7 +27,7 @@ export default function Navbar() {
         </div>
         <div className="space-x-5">
           <IconButton aria-label="web-access">
-            <PersonIcon className="text-offWhite" fontSize="large" />
+            <PersonIcon className="text-offWhite" fontSize="large" onClick={profile} />
           </IconButton>
           <IconButton aria-label="settings">
             <SettingsIcon className="text-offWhite" fontSize="large" />
