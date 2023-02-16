@@ -7,27 +7,33 @@ import axios from 'axios';
 
 export default function Starting() {
   let navigate = useNavigate();
-  const [order, setOrder] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 
-  const handleDragStart = (e, index) => {
-    e.dataTransfer.setData("index", index);
-  }
-
-  const handleDrop = (e, index) => {
-    const startIndex = e.dataTransfer.getData("index");
-    const newOrder = [...order];
-    newOrder.splice(index, 0, newOrder.splice(startIndex, 1)[0]);
-    setOrder(newOrder);
-    console.log(newOrder)
-  }
 
   function handleSubmit() {
+
+    var choice1 = document.getElementById('c1').value
+    var choice2 = document.getElementById('c2').value
+    var choice3 = document.getElementById('c3').value
+    var choice4 = document.getElementById('c4').value
+    var choice5 = document.getElementById('c5').value
+    var choice6 = document.getElementById('c6').value
+    var choice7 = document.getElementById('c7').value
+    var choice8 = document.getElementById('c8').value
+    var choice9 = document.getElementById('c9').value
+
+    const perferences = new Array(choice1, choice2, choice3, choice4, choice5, choice6, choice7, choice8, choice9)
+
+
+
     axios.post("http://localhost:8082/api/users", {
-        project_preferences: order,
+        project_preferences: perferences,
+        email: document.getElementById("email").value,
         first_name: document.getElementById('first').value, 
         last_name: document.getElementById('last').value,
         address: document.getElementById('address').value,
-        skills: selectedOptions
+        password: document.getElementById('password').value,
+        skills: selectedOptions,
+        extra_information: document.getElementById('additional').value,
     })
     .then(response => {
       console.log(response.data);
@@ -44,6 +50,12 @@ export default function Starting() {
     { value: 3, label: "Python" },
     { value: 4, label: "React" },
     { value: 5, label: "MongoDB" },
+    { value: 6, label: "Angular" },
+    { value: 7, label: "Agile Methodologies" },
+    { value: 8, label: "AI/ML" },
+    { value: 9, label: "Git" },
+    { value: 10, label: "Javascript" },
+    
   ];
 
   const [selectedOptions, setSelectedOptions] = useState(null);
@@ -67,42 +79,70 @@ export default function Starting() {
     <div className="bg-offWhite h-screen">
       <Navbar />
 
-      <div class="flex justify-between w-full py-5 px-5">
-        <div class="w-1/3 mx-2">
+      <h1 className="text-4xl text-center font-bold text-orange py-4">
+      Greetings!
+    </h1>
+
+
+      <div class="flex justify-between w-full px-5">
+      <div class="w-1/2 mx-2 px-12">
           <form>
-            <label htmlFor="input1">First Name</label>
+            <label htmlFor="input3">Email</label>
             <input
               type="text"
-              id="first"
-              name="input1"
+              id="email"
               className="border rounded py-2 px-3 w-full"
             />
           </form>
         </div>
-        <div class="w-1/3 mx-2">
+        <div class="w-1/2 mx-2 px-12">
           <form>
-            <label htmlFor="input2">Last Name</label>
+            <label htmlFor="input3">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        </div>
+
+
+
+      <div class="flex justify-between w-full px-5">
+      <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">First Name</label>
+            <input
+              type="text"
+              id="first"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Last Name</label>
             <input
               type="text"
               id="last"
-              name="input2"
               className="border rounded py-2 px-3 w-full"
             />
           </form>
         </div>
 
-        <div class="w-1/3 mx-2">
+        <div class="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Address</label>
             <input
               type="text"
               id="address"
-              name="input3"
               className="border rounded py-2 px-3 w-full"
             />
           </form>
         </div>
       </div>
+  
 
 
     <div className="flex justify-between w-full py-5 px-5">
@@ -116,31 +156,147 @@ export default function Starting() {
     </div>
 
 
-    <div className="flex flex-wrap justify-center items-center w-screen">
-      {order.map((number, index) => (
-        <button
-          key={index}
-          className="bg-green hover:bg-blue-700 text-white font-bold py-4 px-8 rounded cursor-move m-2"
-          draggable="true"
-          onDragStart={(e) => handleDragStart(e, index)}
-          onDrop={(e) => handleDrop(e, index)}
-          onDragOver={(e) => e.preventDefault()}
-        >
-          {number}
-        </button>
-      ))}
-    </div>
+    <h1 className="text-5xl font-bold text-orange px-4 py-4">
+      Top 9 Project Choices
+    </h1>
+
+    
 
 
-    <div className="flex justify-end px-10 py-10">
+    <div class="bg-offWhite flex justify-between w-full px-5">
+      <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 1</label>
+            <input
+              type="text"
+              id="c1"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 2</label>
+            <input
+              type="text"
+              id="c2"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 3</label>
+            <input
+              type="text"
+              id="c3"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+      </div>
+
+      
+
+    <div class="bg-offWhite flex justify-between w-full px-5">
+      <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 4</label>
+            <input
+              type="text"
+              id="c4"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 5</label>
+            <input
+              type="text"
+              id="c5"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 6</label>
+            <input
+              type="text"
+              id="c6"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+      </div>
+
+      <div class="bg-offWhite flex justify-between w-full px-5">
+      <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 7</label>
+            <input
+              type="text"
+              id="c7"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 8</label>
+            <input
+              type="text"
+              id="c8"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+
+        <div class="w-1/3 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Choice 9</label>
+            <input
+              type="text"
+              id="c9"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        
+      </div>
+      <div class="bg-offWhite flex justify-between w-full px-5">
+      <div class="w-1/2 mx-2 py-5">
+          <form>
+            <label htmlFor="input3">Additional Info</label>
+            <input
+              type="text"
+              id="additional"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        </div>
+
+
+      <div className="bg-offWhite flex justify-end px-10 py-10">
   <button className="bg-green text-white px-10 py-2 rounded-md" onClick={handleSubmit}>Submit</button>
 </div>
+
+
+
+   
+
+
 
 
 
 
      
 </div>
+
 
 
   );
