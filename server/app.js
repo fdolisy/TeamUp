@@ -4,10 +4,13 @@ const express = require('express');
 const connectDB = require('./config/db');
 
 const app = express();
-const user_routes = require('./routes/api/users');
+
 const team_routes = require('./routes/api/teams');
-app.use('/api/users', user_routes);
+const login_route = require('./routes/api/login');
+const registration_route = require('./routes/api/registration');
 app.use('/api/teams', team_routes);
+app.use('/api/register', registration_route)
+app.use('/api/login', login_route)
 
 // Connect Database
 connectDB();
