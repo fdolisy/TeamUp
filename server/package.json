@@ -8,16 +8,6 @@
     "app": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nurislam03/MERN_A_to_Z.git"
-  },
-  "author": "Nur Islam",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nurislam03/MERN_A_to_Z/issues"
-  },
-  "homepage": "https://github.com/nurislam03/MERN_A_to_Z#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
