@@ -25,7 +25,7 @@ export default function Starting() {
 
 
 
-    axios.post("http://localhost:8082/api/users", {
+    axios.post("http://localhost:8082/api/register", {
         project_preferences: perferences,
         email: document.getElementById("email").value,
         first_name: document.getElementById('first').value, 
