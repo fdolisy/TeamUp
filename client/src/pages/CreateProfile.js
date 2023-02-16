@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import Select from "react-select";
-
+import axios from 'axios';
 
 
 export default function Starting() {
@@ -22,6 +22,19 @@ export default function Starting() {
   }
 
   function handleSubmit() {
+    axios.post("http://localhost:8082/api/users", {
+        project_preferences: order,
+        first_name: document.getElementById('first').value, 
+        last_name: document.getElementById('last').value,
+        address: document.getElementById('address').value,
+        skills: selectedOptions
+    })
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 
   }
 
@@ -49,6 +62,7 @@ export default function Starting() {
     navigate("/join");
   }
 
+
   return (
     <div className="bg-offWhite h-screen">
       <Navbar />
@@ -56,35 +70,35 @@ export default function Starting() {
       <div class="flex justify-between w-full py-5 px-5">
         <div class="w-1/3 mx-2">
           <form>
-            <label for="input1">First Name</label>
+            <label htmlFor="input1">First Name</label>
             <input
               type="text"
-              id="input1"
+              id="first"
               name="input1"
-              class="border rounded py-2 px-3 w-full"
+              className="border rounded py-2 px-3 w-full"
             />
           </form>
         </div>
         <div class="w-1/3 mx-2">
           <form>
-            <label for="input2">Last Name</label>
+            <label htmlFor="input2">Last Name</label>
             <input
               type="text"
-              id="input2"
+              id="last"
               name="input2"
-              class="border rounded py-2 px-3 w-full"
+              className="border rounded py-2 px-3 w-full"
             />
           </form>
         </div>
 
         <div class="w-1/3 mx-2">
           <form>
-            <label for="input3">Address</label>
+            <label htmlFor="input3">Address</label>
             <input
               type="text"
-              id="input3"
+              id="address"
               name="input3"
-              class="border rounded py-2 px-3 w-full"
+              className="border rounded py-2 px-3 w-full"
             />
           </form>
         </div>
@@ -92,7 +106,7 @@ export default function Starting() {
 
 
     <div className="flex justify-between w-full py-5 px-5">
-        <label for="skills">Skills</label>
+        <label htmlFor="skills">Skills</label>
       <div className="w-full flex flex-wrap items-center lg:justify-between justify-center">
         <div className="w-full mt-8 ">
           <Select options={skills} onChange={setHandle} isMulti />
@@ -100,8 +114,6 @@ export default function Starting() {
         
       </div>
     </div>
-
-    <div>{selectedOptions}</div>
 
 
     <div className="flex flex-wrap justify-center items-center w-screen">
@@ -121,7 +133,7 @@ export default function Starting() {
 
 
     <div className="flex justify-end px-10 py-10">
-  <button className="bg-green text-white px-10 py-2 rounded-md">Submit</button>
+  <button className="bg-green text-white px-10 py-2 rounded-md" onClick={handleSubmit}>Submit</button>
 </div>
 
 
