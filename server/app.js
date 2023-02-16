@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 const app = express();
 
 
+
 const cors = require('cors');
 const corsOptions ={
     origin:'http://localhost:3000', 
@@ -21,13 +22,16 @@ app.use(cors(corsOptions));
 
 
 
-const routes = require('./routes/api/users');
-app.use('/api/users', routes);
+const team_routes = require('./routes/api/teams');
+const login_route = require('./routes/api/login');
+const registration_route = require('./routes/api/registration');
+app.use('/api/teams', team_routes);
+app.use('/api/register', registration_route)
+app.use('/api/login', login_route)
 
 
 // Connect Database
 connectDB();
-
 
 app.get('/', (req, res) => res.send('Hello world!'));
 
