@@ -23,9 +23,11 @@ app.use(cors(corsOptions));
 
 
 const team_routes = require('./routes/api/teams');
+const project_routes = require('./routes/api/projects');
 const login_route = require('./routes/api/login');
 const registration_route = require('./routes/api/registration');
 app.use('/api/teams', team_routes);
+app.use('/api/projects', project_routes)
 app.use('/api/register', registration_route)
 app.use('/api/login', login_route)
 

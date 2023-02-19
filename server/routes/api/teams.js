@@ -48,7 +48,7 @@ app.get('/:id', (req, res) => {
 // @access Public
 // @param {[mongoose.Schema.Types.ObjectId]} members
 // @param {Boolean} is_public
-// @param {[String]} team_project_preferences
+// @param {[ObjectID]} team_project_preferences
 app.post('/', async (req, res) => {
   team = req.body
 

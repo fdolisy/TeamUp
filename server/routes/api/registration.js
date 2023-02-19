@@ -17,7 +17,7 @@ const User = require('../../models/User');
 // @param {String} password
 // @param {String} address
 // @param {[String]} skills
-// @param {[String]} project_preferences
+// @param {[ObjectID]} project_preferences
 // @param {String} [extra_information]
 app.post('/', async (req, res) => {
     try {
