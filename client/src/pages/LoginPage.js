@@ -2,14 +2,29 @@ import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function JoinTeam() {
-
+const LoginPage = () => {
     let navigate = useNavigate()
   function HandleSubmit() {
-    console.log(document.getElementById("email").value);
-    console.log(document.getElementById("password").value);
+    
 
-    navigate("/status")
+    axios.post("http://localhost:8082/api/login", {
+        email: document.getElementById("email").value,
+        password: document.getElementById('password').value,
+    })
+    .then(response => {
+      console.log("hello")
+      navigate("/status")
+    })
+    .catch(error => {
+      console.log("invalid")
+      console.log(error);
+    });
+
+    
+  }
+
+  function HandleSignUp() {
+    navigate("/profile")
   }
 
   return (
@@ -22,7 +37,6 @@ export default function JoinTeam() {
             <div className="space-y-4">
               <div className="text-center text-6xl font-bold">Hello!</div>
               <div className="flex flex-col space-y-4 py-4">
-                <form onSubmit={HandleSubmit}>
                   <div>
                     <label htmlFor="email">Email</label>
                     <input
@@ -42,15 +56,23 @@ export default function JoinTeam() {
                     />
                   </div>
 
-                  <div className="flex justify-center items-center mt-6">
+                  <div className="flex space-x-10 justify-center items-center mt-6">
                     <button
                       className={"obtn text-2xl py-3 px-4 "}
                       onClick={HandleSubmit}
                     >
                       Login
                     </button>
+
+                  
+
+                    <button
+                      className={"obtn text-2xl py-3 px-4 "}
+                      onClick={HandleSignUp}
+                    >
+                      Sign Up
+                    </button>
                   </div>
-                </form>
               </div>
             </div>
           </div>
@@ -59,3 +81,4 @@ export default function JoinTeam() {
     </div>
   );
 }
+export default LoginPage;
