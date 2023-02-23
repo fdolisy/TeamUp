@@ -10,9 +10,15 @@
 .orange {
   @apply text-white bg-orange hover:bg-orange rounded-lg
 }
-
+ 
 .green {
   @apply text-white bg-green hover:bg-green rounded-lg
+}
+.btn {
+  @apply text-white bg-green hover:bg-green-dark rounded-lg
+}
+.obtn {
+  @apply text-white bg-orange hover:bg-green-dark rounded-lg
 }
 
 
