@@ -17,6 +17,9 @@
 .btn {
   @apply text-white bg-green hover:bg-green-dark rounded-lg
 }
+.obtn {
+  @apply text-white bg-orange hover:bg-green-dark rounded-lg
+}
 
 
 body {

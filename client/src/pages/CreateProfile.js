@@ -5,7 +5,7 @@ import Select from "react-select";
 import axios from 'axios';
 
 
-export default function Starting() {
+export default function CreateProfile() {
   let navigate = useNavigate();
 
 
@@ -79,9 +79,9 @@ export default function Starting() {
     <div className="bg-offWhite h-screen">
       <Navbar />
 
-      <h1 className="text-4xl text-center font-bold text-orange py-4">
-      Greetings!
-    </h1>
+      <h1 className="text-4xl font-bold text-orange px-4 py-4">
+      Create Profile
+      </h1>
 
 
       <div class="flex justify-between w-full px-5">
@@ -156,7 +156,7 @@ export default function Starting() {
     </div>
 
 
-    <h1 className="text-5xl font-bold text-orange px-4 py-4">
+    <h1 className="text-4xl font-bold text-orange px-4 py-4">
       Top 9 Project Choices
     </h1>
 
