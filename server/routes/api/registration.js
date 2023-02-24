@@ -7,13 +7,15 @@ app.use(express.json());
 
 // Load User model
 const User = require('../../models/User');
-// @route POST api/users/:register
+// @route POST api/users/register
 // @description user login system
 // @access Public
 // @param {String} first_name
 // @param {String} last_name
 // @param {String} email
 // @param {String} address
+// @param {String} city
+// @param {String} zip
 // @param {[String]} skills
 // @param {[String]} project_preferences
 // @param {String} [extra_information]
@@ -27,6 +29,8 @@ app.post('/', async (req, res) => {
         email: req.body.email,
         password: req.body.password,
         address: req.body.address,
+        city: req.body.address,
+        zip: req.body.zip,
         project_preferences: req.body.project_preferences,
         skills: req.body.skills,
         extra_information: req.body.extra_information,

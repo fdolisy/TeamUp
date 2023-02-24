@@ -26,6 +26,10 @@ const TeamSchema = new mongoose.Schema({
   team_project_preferences: {
     type: [String],
     required: true
+  },
+  timings: {
+    type: [String],
+    required: true //added once team is being fimalized - not during team creation
   }
 });
 

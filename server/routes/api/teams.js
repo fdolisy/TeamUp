@@ -1,6 +1,7 @@
 // routes/api/teams.js
 // Defines API endpoints for creating, updating, and deleting teams from the database
 
+const { Email } = require('@mui/icons-material');
 const express = require('express');
 var app = express();
 app.use(express.json());
@@ -32,7 +33,7 @@ app.get('/:id', (req, res) => {
 // @param {Boolean} is_public
 // @param {[String]} team_project_preferences
 app.post('/', async (req, res) => {
-  team = req.body
+  var team = req.body
 
   // Assign the team number sequentially based on how many teams have already been created
   team.team_number = await Team.countDocuments({}).exec() + 1;
@@ -45,16 +46,36 @@ app.post('/', async (req, res) => {
     .catch(err => res.status(400).json({ error: err }));
 });
 
+// @route POST api/teams
+// @description Team submission 
+// @access Public
+// @param [String] timings
+// @param {Boolean} is_finalized
+app.put('/:id', async (req, res) => {
+  try{
+    
+    Team.timings = req.body.timings;
+    Team.is_finalized = true;
+
+    Team.findByIdAndUpdate(req.params.id, req.body);
+    res.send("Congradulaions! You submitted your team!");
+
+  } catch {
+      res.status(404)
+  }      
+});
+
+
 // @route PUT api/teams/:id
 // @description Update team
 // @access Public
 app.put('/:id', (req, res) => {
   Team.findByIdAndUpdate(req.params.id, req.body)
     .then(team => res.json({ msg: 'Updated team ' + team.id + ' successfully' }))
-    .catch(err =>
-      res.status(400).json({ error: err })
-    );
+    .catch(err => res.status(400).json({ error: err }));
 });
+
+
 
 // @route DELETE api/teams/:id
 // @description Delete team by id
