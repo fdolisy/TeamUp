@@ -30,7 +30,12 @@ app.post('/', async (req, res) => {
             }
           );
           user.token = token;
-          res.status(200).json({ validSignIn: "Valid Sign in" });
+          res.status(200).json(
+            {
+              validSignIn: "Valid Sign in", 
+              token: token,
+              userID: user._id
+            });
         } else {
           res.status(400).json({ passwordIncorrect: "Password incorrect" });
         }
