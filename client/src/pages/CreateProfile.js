@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import Select from "react-select";
 import axios from 'axios';
+import emailjs from 'emailjs-com';
+
 
 
 export default function CreateProfile() {
@@ -36,13 +38,27 @@ export default function CreateProfile() {
         extra_information: document.getElementById('additional').value,
     })
     .then(response => {
-      console.log(response.data);
+
+      sendEmail(response.data)
+
+
     })
     .catch(error => {
       console.log(error);
     });
 
   }
+
+  function sendEmail(e) {
+    emailjs.sendForm('service_vmpq0hj', 'template_uu0i9ga', e.proje, 'a5a_cbsmyvaYaGgbv')
+      .then((result) => {
+          window.location.reload()  //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior) 
+      }, (error) => {
+          console.log(error.text);
+      });
+  }
+
+
 
   const skills = [
     { value: 1, label: "Java" },
@@ -66,13 +82,6 @@ export default function CreateProfile() {
 
 
 
-  function createTeam() {
-    navigate("/create");
-  }
-
-  function joinTeam() {
-    navigate("/join");
-  }
 
 
   return (
