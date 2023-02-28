@@ -18,7 +18,7 @@ export default function Starting() {
     return (
         <div className="bg-offWhite">
           <Navbar />
-          <div class="flex h-screen">
+          <div className="flex h-screen">
             <div className="flex flex-col m-auto">
               <div className="shadow-lg rounded-lg w-[500px] p-3">
                 <div className="space-y-4">
