@@ -1,6 +1,7 @@
 // models/User.js
 
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 const uniqueValidator = require("mongoose-unique-validator")
 
 const UserSchema = new mongoose.Schema({
@@ -47,7 +48,7 @@ const UserSchema = new mongoose.Schema({
     }
   },
   project_preferences: {
-    type: [String],
+    type: [ObjectId],
     required: [true, "Project preferences are required"]
   },
   skills: {

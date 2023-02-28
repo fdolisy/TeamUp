@@ -24,7 +24,7 @@ const TeamSchema = new mongoose.Schema({
     required: true
   },
   team_project_preferences: {
-    type: [String],
+    type: [ObjectId],
     required: true
   },
   timings: {

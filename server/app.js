@@ -3,6 +3,8 @@
 
 const express = require('express');
 const connectDB = require('./config/db');
+require('dotenv').config({ path: './config.env' });
+
 
 
 
@@ -23,13 +25,15 @@ app.use(cors(corsOptions));
 
 
 const team_routes = require('./routes/api/teams');
+const project_routes = require('./routes/api/projects');
 const login_route = require('./routes/api/login');
 const registration_route = require('./routes/api/registration');
-//const submit_team_route = require('./routes/api/teams/:id/submit');
+const user_routes = require('./routes/api/users');
 app.use('/api/teams', team_routes);
+app.use('/api/projects', project_routes)
 app.use('/api/register', registration_route)
 app.use('/api/login', login_route)
-//app.use('/api/teams/:id/submit', submit_team_route)
+app.use('/api/users', user_routes);
 
 
 // Connect Database

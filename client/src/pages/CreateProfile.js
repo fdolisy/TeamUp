@@ -1,47 +1,71 @@
-import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useState } from 'react';
+import { useState } from "react";
 import Select from "react-select";
-import axios from 'axios';
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import emailjs from "emailjs-com";
 
 export default function CreateProfile() {
   let navigate = useNavigate();
 
-
   function handleSubmit() {
+    var choice1 = document.getElementById("c1").value;
+    var choice2 = document.getElementById("c2").value;
+    var choice3 = document.getElementById("c3").value;
+    var choice4 = document.getElementById("c4").value;
+    var choice5 = document.getElementById("c5").value;
+    var choice6 = document.getElementById("c6").value;
+    var choice7 = document.getElementById("c7").value;
+    var choice8 = document.getElementById("c8").value;
+    var choice9 = document.getElementById("c9").value;
 
-    var choice1 = document.getElementById('c1').value
-    var choice2 = document.getElementById('c2').value
-    var choice3 = document.getElementById('c3').value
-    var choice4 = document.getElementById('c4').value
-    var choice5 = document.getElementById('c5').value
-    var choice6 = document.getElementById('c6').value
-    var choice7 = document.getElementById('c7').value
-    var choice8 = document.getElementById('c8').value
-    var choice9 = document.getElementById('c9').value
+    const perferences = new Array(
+      choice1,
+      choice2,
+      choice3,
+      choice4,
+      choice5,
+      choice6,
+      choice7,
+      choice8,
+      choice9
+    );
 
-    const perferences = new Array(choice1, choice2, choice3, choice4, choice5, choice6, choice7, choice8, choice9)
-
-
-
-    axios.post("http://localhost:8082/api/register", {
+    axios
+      .post("http://localhost:8082/api/register", {
         project_preferences: perferences,
         email: document.getElementById("email").value,
-        first_name: document.getElementById('first').value, 
-        last_name: document.getElementById('last').value,
-        address: document.getElementById('address').value,
-        password: document.getElementById('password').value,
+        first_name: document.getElementById("first").value,
+        last_name: document.getElementById("last").value,
+        address: document.getElementById("address").value,
+        password: document.getElementById("password").value,
         skills: selectedOptions,
-        extra_information: document.getElementById('additional').value,
-    })
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log(error);
-    });
+        extra_information: document.getElementById("additional").value,
+      })
+      .then((response) => {
+        sendEmail(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
+  function sendEmail(e) {
+    emailjs
+      .sendForm(
+        "service_vmpq0hj",
+        "template_uu0i9ga",
+        e.proje,
+        "a5a_cbsmyvaYaGgbv"
+      )
+      .then(
+        (result) => {
+          window.location.reload(); //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior)
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
   }
 
   const skills = [
@@ -55,7 +79,6 @@ export default function CreateProfile() {
     { value: 8, label: "AI/ML" },
     { value: 9, label: "Git" },
     { value: 10, label: "Javascript" },
-    
   ];
 
   const [selectedOptions, setSelectedOptions] = useState(null);
@@ -64,28 +87,16 @@ export default function CreateProfile() {
     setSelectedOptions(Array.isArray(e) ? e.map((skill) => skill.label) : []);
   };
 
-
-
-  function createTeam() {
-    navigate("/create");
-  }
-
-  function joinTeam() {
-    navigate("/join");
-  }
-
-
   return (
     <div className="bg-offWhite h-screen">
       <Navbar />
 
       <h1 className="text-4xl font-bold text-orange px-4 py-4">
-      Create Profile
+        Create Profile
       </h1>
 
-
       <div class="flex justify-between w-full px-5">
-      <div class="w-1/2 mx-2 px-12">
+        <div class="w-1/2 mx-2 px-12">
           <form>
             <label htmlFor="input3">Email</label>
             <input
@@ -95,7 +106,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        <div class="w-1/2 mx-2 px-12">
+        <div className="w-1/2 mx-2 px-12">
           <form>
             <label htmlFor="input3">Password</label>
             <input
@@ -105,12 +116,10 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        </div>
-
-
+      </div>
 
       <div class="flex justify-between w-full px-5">
-      <div class="w-1/3 mx-2 py-5">
+        <div class="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">First Name</label>
             <input
@@ -120,7 +129,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Last Name</label>
             <input
@@ -142,29 +151,26 @@ export default function CreateProfile() {
           </form>
         </div>
       </div>
-  
 
-
-    <div className="flex justify-between w-full py-5 px-5">
+      <div className="flex justify-between w-full py-5 px-5">
         <label htmlFor="skills">Skills</label>
-      <div className="w-full flex flex-wrap items-center lg:justify-between justify-center">
-        <div className="w-full mt-8 ">
-          <Select options={skills} onChange={setHandle} isMulti />
+        <div className="w-full flex flex-wrap items-center lg:justify-between justify-center">
+          <div className="w-full mt-8 ">
+            <Select options={skills} onChange={setHandle} isMulti />
+          </div>
         </div>
-        
       </div>
-    </div>
 
+      <h1 className="text-4xl font-bold text-orange px-4 py-4">
+        Top 9 Project Choices
+      </h1>
 
-    <h1 className="text-4xl font-bold text-orange px-4 py-4">
-      Top 9 Project Choices
-    </h1>
+      <h1 className="text-5xl font-bold text-orange px-4 py-4">
+        Top 9 Project Choices
+      </h1>
 
-    
-
-
-    <div class="bg-offWhite flex justify-between w-full px-5">
-      <div class="w-1/3 mx-2 py-5">
+      <div className="bg-offWhite flex justify-between w-full px-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 1</label>
             <input
@@ -174,7 +180,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 2</label>
             <input
@@ -185,7 +191,7 @@ export default function CreateProfile() {
           </form>
         </div>
 
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 3</label>
             <input
@@ -197,10 +203,8 @@ export default function CreateProfile() {
         </div>
       </div>
 
-      
-
-    <div class="bg-offWhite flex justify-between w-full px-5">
-      <div class="w-1/3 mx-2 py-5">
+      <div className="bg-offWhite flex justify-between w-full px-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 4</label>
             <input
@@ -210,7 +214,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 5</label>
             <input
@@ -221,7 +225,7 @@ export default function CreateProfile() {
           </form>
         </div>
 
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 6</label>
             <input
@@ -233,8 +237,8 @@ export default function CreateProfile() {
         </div>
       </div>
 
-      <div class="bg-offWhite flex justify-between w-full px-5">
-      <div class="w-1/3 mx-2 py-5">
+      <div className="bg-offWhite flex justify-between w-full px-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 7</label>
             <input
@@ -244,7 +248,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 8</label>
             <input
@@ -255,7 +259,7 @@ export default function CreateProfile() {
           </form>
         </div>
 
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Choice 9</label>
             <input
@@ -265,10 +269,9 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        
       </div>
-      <div class="bg-offWhite flex justify-between w-full px-5">
-      <div class="w-1/2 mx-2 py-5">
+      <div className="bg-offWhite flex justify-between w-full px-5">
+        <div className="w-1/2 mx-2 py-5">
           <form>
             <label htmlFor="input3">Additional Info</label>
             <input
@@ -278,26 +281,16 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        </div>
-
+      </div>
 
       <div className="bg-offWhite flex justify-end px-10 py-10">
-  <button className="bg-green text-white px-10 py-2 rounded-md" onClick={handleSubmit}>Submit</button>
-</div>
-
-
-
-   
-
-
-
-
-
-
-     
-</div>
-
-
-
+        <button
+          className="bg-green text-white px-10 py-2 rounded-md"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
   );
 }
