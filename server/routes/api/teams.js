@@ -10,10 +10,28 @@ const Team = require('../../models/Team');
 // @route GET api/teams
 // @description Get all teams
 // @access Public
-app.get('/', (_, res) => {
-  Team.find()
+app.get('/', (req, res) => {
+  
+  // If the request includes ?is_public=false, do not include public teams
+  if(req.query.is_public === 'false') {
+    Team.find({'is_public' : false})
     .then(teams => res.json(teams))
     .catch(err => res.status(404).json({ noteamsfound: err }));
+  } 
+
+  // If the request includes ?is_public=true, do not include private teams
+  else if(req.query.is_public === 'true') {
+    Team.find({'is_public' : true})
+    .then(teams => res.json(teams))
+    .catch(err => res.status(404).json({ noteamsfound: err }));
+  }
+
+  // Otherwise, return all teams
+  else {
+    Team.find()
+    .then(teams => res.json(teams))
+    .catch(err => res.status(404).json({ noteamsfound: err }));
+  }
 });
 
 // @route GET api/teams/:id
@@ -30,7 +48,7 @@ app.get('/:id', (req, res) => {
 // @access Public
 // @param {[mongoose.Schema.Types.ObjectId]} members
 // @param {Boolean} is_public
-// @param {[String]} team_project_preferences
+// @param {[ObjectID]} team_project_preferences
 app.post('/', async (req, res) => {
   team = req.body
 

@@ -7,15 +7,17 @@ app.use(express.json());
 
 // Load User model
 const User = require('../../models/User');
-// @route POST api/users/:register
+
+// @route POST api/users/register
 // @description user login system
 // @access Public
 // @param {String} first_name
 // @param {String} last_name
 // @param {String} email
+// @param {String} password
 // @param {String} address
 // @param {[String]} skills
-// @param {[String]} project_preferences
+// @param {[ObjectID]} project_preferences
 // @param {String} [extra_information]
 app.post('/', async (req, res) => {
     try {
@@ -39,7 +41,8 @@ app.post('/', async (req, res) => {
           expiresIn: "24h",
         }
       );
-      // save user token
+
+    // save user token
     newUser.token = token;
     newUser.save(function(err, user) {
       if (err) return res.status(404).json(err.message);
@@ -49,7 +52,5 @@ app.post('/', async (req, res) => {
     } catch (err) {
       res.status(404).json(err)
     }
-      
-
 });
 module.exports = app;

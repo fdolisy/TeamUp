@@ -7,9 +7,12 @@ app.use(express.json());
 
 // Load User model
 const User = require('../../models/User');
-// @route POST api/users/:login
+
+// @route POST api/users/login
 // @description user login system
 // @access Public
+// @param {String} email
+// @param {String} password
 app.post('/', async (req, res) => {
     try{
         email = req.body.email;
@@ -27,7 +30,12 @@ app.post('/', async (req, res) => {
             }
           );
           user.token = token;
-          res.status(200).json({ validSignIn: "Valid Sign in" });
+          res.status(200).json(
+            {
+              validSignIn: "Valid Sign in", 
+              token: token,
+              userID: user._id
+            });
         } else {
           res.status(400).json({ passwordIncorrect: "Password incorrect" });
         }
