@@ -1,34 +1,31 @@
 import Navbar from "../components/Navbar";
 import { useState } from "react";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Starting() {
+
+export default function CreateProfile() {
+  let navigate = useNavigate();
+
+
   function handleSubmit() {
-    var choice1 = document.getElementById("c1").value;
-    var choice2 = document.getElementById("c2").value;
-    var choice3 = document.getElementById("c3").value;
-    var choice4 = document.getElementById("c4").value;
-    var choice5 = document.getElementById("c5").value;
-    var choice6 = document.getElementById("c6").value;
-    var choice7 = document.getElementById("c7").value;
-    var choice8 = document.getElementById("c8").value;
-    var choice9 = document.getElementById("c9").value;
 
-    const perferences = new Array(
-      choice1,
-      choice2,
-      choice3,
-      choice4,
-      choice5,
-      choice6,
-      choice7,
-      choice8,
-      choice9
-    );
+    var choice1 = document.getElementById('c1').value
+    var choice2 = document.getElementById('c2').value
+    var choice3 = document.getElementById('c3').value
+    var choice4 = document.getElementById('c4').value
+    var choice5 = document.getElementById('c5').value
+    var choice6 = document.getElementById('c6').value
+    var choice7 = document.getElementById('c7').value
+    var choice8 = document.getElementById('c8').value
+    var choice9 = document.getElementById('c9').value
 
-    axios
-      .post("http://localhost:8082/api/users", {
+    const perferences = new Array(choice1, choice2, choice3, choice4, choice5, choice6, choice7, choice8, choice9)
+
+
+
+    axios.post("http://localhost:8082/api/register", {
         project_preferences: perferences,
         email: document.getElementById("email").value,
         first_name: document.getElementById("first").value,
@@ -66,12 +63,16 @@ export default function Starting() {
   };
 
   return (
+    <div>
+
+    
     <div className="bg-offWhite h-screen">
       <Navbar />
 
-      <h1 className="text-4xl text-center font-bold text-orange py-4">
-        Greetings!
+      <h1 className="text-4xl font-bold text-orange px-4 py-4">
+      Create Profile
       </h1>
+
 
       <div className="flex justify-between w-full px-5">
         <div className="w-1/2 mx-2 px-12">
@@ -138,6 +139,12 @@ export default function Starting() {
           </div>
         </div>
       </div>
+    </div>
+
+
+    <h1 className="text-4xl font-bold text-orange px-4 py-4">
+      Top 9 Project Choices
+    </h1>
 
       <h1 className="text-5xl font-bold text-orange px-4 py-4">
         Top 9 Project Choices
