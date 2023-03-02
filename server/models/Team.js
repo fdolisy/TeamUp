@@ -29,7 +29,7 @@ const TeamSchema = new mongoose.Schema({
   },
   timings: {
     type: [String],
-    required: true //added once team is being fimalized - not during team creation
+    required: true 
   }
 });
 

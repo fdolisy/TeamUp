@@ -12,26 +12,28 @@ const Team = require('../../models/Team');
 // @description Get all teams
 // @access Public
 app.get('/', (req, res) => {
-  
+
   // If the request includes ?is_public=false, do not include public teams
-  if(req.query.is_public === 'false') {
-    Team.find({'is_public' : false})
-    .then(teams => res.json(teams))
-    .catch(err => res.status(404).json({ noteamsfound: err }));
-  } 
+  if (req.query.is_public === 'false') {
+    Team.find({ 'is_public': false })
+      .then(teams => res.json(teams))
+      .catch(err => res.status(404).json({ noteamsfound: err }));
+  }
 
   // If the request includes ?is_public=true, do not include private teams
-  else if(req.query.is_public === 'true') {
-    Team.find({'is_public' : true})
-    .then(teams => res.json(teams))
-    .catch(err => res.status(404).json({ noteamsfound: err }));
+  else if (req.query.is_public === 'true') {
+    Team.find({ 'is_public': true })
+      .then(teams => res.json(teams))
+      .catch(err => res.status(404).json({ noteamsfound: err }));
   }
+
+
 
   // Otherwise, return all teams
   else {
     Team.find()
-    .then(teams => res.json(teams))
-    .catch(err => res.status(404).json({ noteamsfound: err }));
+      .then(teams => res.json(teams))
+      .catch(err => res.status(404).json({ noteamsfound: err }));
   }
 });
 
@@ -64,23 +66,25 @@ app.post('/', async (req, res) => {
     .catch(err => res.status(400).json({ error: err }));
 });
 
-// @route POST api/teams
+// @route POST api/teams/team_submit
 // @description Team submission 
 // @access Public
 // @param [String] timings
 // @param {Boolean} is_finalized
-app.put('/:id', async (req, res) => {
-  try{
-    
-    Team.timings = req.body.timings;
-    Team.is_finalized = true;
+app.put('/team_submit/:id', async (req, res) => {
 
-    Team.findByIdAndUpdate(req.params.id, req.body);
-    res.send("Congradulaions! You submitted your team!");
-
-  } catch {
-      res.status(404)
-  }      
+  try {
+    const updatedTeam = await Team.findByIdAndUpdate(req.params.id, {
+      $set: {
+        timings: req.body.timings,
+        is_finalized: 'true'
+      }
+    }, { new: true });
+    res.send("Congradulaions! You submitted your team! Is team submitted:" + updatedTeam.is_finalized);
+  }
+  catch {
+    res.status(404)
+  }
 });
 
 
