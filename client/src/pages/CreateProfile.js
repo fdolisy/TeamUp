@@ -153,8 +153,8 @@ export default function CreateProfile() {
         Create Profile
       </h1>
 
-      <div class="flex justify-between w-full px-5">
-        <div class="w-1/2 mx-2 px-12">
+      <div className="flex justify-between w-full px-5">
+        <div className="w-1/2 mx-2 px-12">
           <form>
             <label htmlFor="input3">Email</label>
             <input
@@ -176,8 +176,8 @@ export default function CreateProfile() {
         </div>
       </div>
 
-      <div class="flex justify-between w-full px-5">
-        <div class="w-1/3 mx-2 py-5">
+      <div className="flex justify-between w-full px-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">First Name</label>
             <input
@@ -198,7 +198,7 @@ export default function CreateProfile() {
           </form>
         </div>
 
-        <div class="w-1/3 mx-2 py-5">
+        <div className="w-1/3 mx-2 py-5">
           <form>
             <label htmlFor="input3">Address</label>
             <input
@@ -210,8 +210,8 @@ export default function CreateProfile() {
         </div>
       </div>
 
-      <div class="flex justify-between w-full px-5">
-        <div class="w-1/2 mx-2 px-12">
+      <div className="flex justify-between w-full px-5">
+        <div className="w-1/2 mx-2 px-12">
           <form>
             <label htmlFor="input3">City</label>
             <input

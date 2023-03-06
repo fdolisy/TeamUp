@@ -32,7 +32,7 @@ axios
 const CreateTeam = () => {
   const [isPublic, setIsPublic] = useState(true);
   function handleSubmit() {
-    const preferences = [
+    const preferences = new Array(
       selectedProject1,
       selectedProject2,
       selectedProject3,
@@ -41,13 +41,13 @@ const CreateTeam = () => {
       selectedProject6,
       selectedProject7,
       selectedProject8,
-      selectedProject9,
-    ];
+      selectedProject9
+    );
     console.log(preferences);
 
     axios
       .post("http://localhost:8082/api/teams", {
-        members: {},
+        members: [],
         is_public: isPublic,
         team_project_preferences: preferences,
       })
