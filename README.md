@@ -27,6 +27,8 @@ Schemas currently stored in our MongoDB database:
 	- password
 	- email
 	- address
+	- city
+	- zip
 	- project_preferences
 	- skills
 	- extra_information
@@ -38,6 +40,7 @@ Schemas currently stored in our MongoDB database:
 	- is_public
 	- is_finalized
 	- team_project_preferences
+	- timings
 
 - Project
 	- name
