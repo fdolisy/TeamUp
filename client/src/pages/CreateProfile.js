@@ -4,32 +4,46 @@ import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import emailjs from "emailjs-com";
+const project_names = [];
+const objs = [];
+const projectOptions = [];
+
+axios
+  .get("http://localhost:8082/api/projects/")
+  .then((response) => {
+    const project_objects = new Array(response.data);
+
+    for (var i = 0; i < project_objects[0].length; i++) {
+      objs.push(project_objects[0][i]);
+    }
+    objs.forEach((object) => {
+      project_names.push(object["name"]);
+    });
+
+    for (var i = 0; i < project_names.length; i++) {
+      projectOptions.push({ value: objs[i], label: project_names[i] });
+    }
+  })
+  .catch((error) => {
+    console.log(error);
+  });
 
 export default function CreateProfile() {
   let navigate = useNavigate();
 
   function handleSubmit() {
-    var choice1 = document.getElementById("c1").value;
-    var choice2 = document.getElementById("c2").value;
-    var choice3 = document.getElementById("c3").value;
-    var choice4 = document.getElementById("c4").value;
-    var choice5 = document.getElementById("c5").value;
-    var choice6 = document.getElementById("c6").value;
-    var choice7 = document.getElementById("c7").value;
-    var choice8 = document.getElementById("c8").value;
-    var choice9 = document.getElementById("c9").value;
-
     const perferences = new Array(
-      choice1,
-      choice2,
-      choice3,
-      choice4,
-      choice5,
-      choice6,
-      choice7,
-      choice8,
-      choice9
+      selectedProject1,
+      selectedProject2,
+      selectedProject3,
+      selectedProject4,
+      selectedProject5,
+      selectedProject6,
+      selectedProject7,
+      selectedProject8,
+      selectedProject9
     );
+    console.log(perferences);
 
     axios
       .post("http://localhost:8082/api/register", {
@@ -38,36 +52,37 @@ export default function CreateProfile() {
         first_name: document.getElementById("first").value,
         last_name: document.getElementById("last").value,
         address: document.getElementById("address").value,
+        city: document.getElementById("city").value,
+        zip: document.getElementById("zip").value,
         password: document.getElementById("password").value,
         skills: selectedOptions,
         extra_information: document.getElementById("additional").value,
       })
-      .then((response) => {
-        sendEmail(response.data);
-      })
+      .then((response) => {})
       .catch((error) => {
         console.log(error);
       });
   }
 
-  function sendEmail(e) {
-    emailjs
-      .sendForm(
-        "service_vmpq0hj",
-        "template_uu0i9ga",
-        e.proje,
-        "a5a_cbsmyvaYaGgbv"
-      )
-      .then(
-        (result) => {
-          window.location.reload(); //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior)
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
-  }
+  // function sendEmail(e) {
+  //   emailjs
+  //     .sendForm(
+  //       "service_vmpq0hj",
+  //       "template_uu0i9ga",
+  //       e.proje,
+  //       "a5a_cbsmyvaYaGgbv"
+  //     )
+  //     .then(
+  //       (result) => {
+  //         window.location.reload(); //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior)
+  //       },
+  //       (error) => {
+  //         console.log(error.text);
+  //       }
+  //     );
+  // }
 
+  //skills
   const skills = [
     { value: 1, label: "Java" },
     { value: 2, label: "C/C++" },
@@ -85,6 +100,49 @@ export default function CreateProfile() {
 
   const setHandle = (e) => {
     setSelectedOptions(Array.isArray(e) ? e.map((skill) => skill.label) : []);
+  };
+
+  // projects
+
+  var selectedProject1 = null;
+  const handleProject1 = (e) => {
+    selectedProject1 = e.value;
+  };
+
+  var selectedProject2 = null;
+  const handleProject2 = (e) => {
+    selectedProject2 = e.value;
+  };
+
+  var selectedProject3 = null;
+  const handleProject3 = (e) => {
+    selectedProject3 = e.value;
+  };
+  var selectedProject4 = null;
+  const handleProject4 = (e) => {
+    selectedProject4 = e.value;
+  };
+  var selectedProject5 = null;
+  const handleProject5 = (e) => {
+    selectedProject5 = e.value;
+  };
+  var selectedProject6 = null;
+  const handleProject6 = (e) => {
+    selectedProject6 = e.value;
+  };
+  var selectedProject7 = null;
+  const handleProject7 = (e) => {
+    selectedProject7 = e.value;
+  };
+
+  var selectedProject8 = null;
+  const handleProject8 = (e) => {
+    selectedProject8 = e.value;
+  };
+
+  var selectedProject9 = null;
+  const handleProject9 = (e) => {
+    selectedProject9 = e.value;
   };
 
   return (
@@ -152,6 +210,29 @@ export default function CreateProfile() {
         </div>
       </div>
 
+      <div class="flex justify-between w-full px-5">
+        <div class="w-1/2 mx-2 px-12">
+          <form>
+            <label htmlFor="input3">City</label>
+            <input
+              type="text"
+              id="city"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+        <div className="w-1/2 mx-2 px-12">
+          <form>
+            <label htmlFor="input3">Zip</label>
+            <input
+              type="text"
+              id="zip"
+              className="border rounded py-2 px-3 w-full"
+            />
+          </form>
+        </div>
+      </div>
+
       <div className="flex justify-between w-full py-5 px-5">
         <label htmlFor="skills">Skills</label>
         <div className="w-full flex flex-wrap items-center lg:justify-between justify-center">
@@ -165,109 +246,51 @@ export default function CreateProfile() {
         Top 9 Project Choices
       </h1>
 
-      <h1 className="text-5xl font-bold text-orange px-4 py-4">
-        Top 9 Project Choices
-      </h1>
-
       <div className="bg-offWhite flex justify-between w-full px-5">
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 1</label>
-            <input
-              type="text"
-              id="c1"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 1 </label>
+          <Select options={projectOptions} onChange={handleProject1} />
         </div>
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 2</label>
-            <input
-              type="text"
-              id="c2"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 2 </label>
+          <Select options={projectOptions} onChange={handleProject2} />
         </div>
 
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 3</label>
-            <input
-              type="text"
-              id="c3"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 3 </label>
+          <Select options={projectOptions} onChange={handleProject3} />
         </div>
       </div>
 
       <div className="bg-offWhite flex justify-between w-full px-5">
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 4</label>
-            <input
-              type="text"
-              id="c4"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 4 </label>
+          <Select options={projectOptions} onChange={handleProject4} />
         </div>
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 5</label>
-            <input
-              type="text"
-              id="c5"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 5 </label>
+          <Select options={projectOptions} onChange={handleProject5} />
         </div>
 
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 6</label>
-            <input
-              type="text"
-              id="c6"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 6 </label>
+          <Select options={projectOptions} onChange={handleProject6} />
         </div>
       </div>
 
       <div className="bg-offWhite flex justify-between w-full px-5">
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 7</label>
-            <input
-              type="text"
-              id="c7"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 7 </label>
+          <Select options={projectOptions} onChange={handleProject7} />
         </div>
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 8</label>
-            <input
-              type="text"
-              id="c8"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 8 </label>
+          <Select options={projectOptions} onChange={handleProject8} />
         </div>
 
         <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Choice 9</label>
-            <input
-              type="text"
-              id="c9"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
+          <label> Project 9 </label>
+          <Select options={projectOptions} onChange={handleProject9} />
         </div>
       </div>
       <div className="bg-offWhite flex justify-between w-full px-5">
