@@ -30,7 +30,7 @@ app.post('/', async (req, res) => {
         email: req.body.email,
         password: req.body.password,
         address: req.body.address,
-        city: req.body.address,
+        city: req.body.city,
         zip: req.body.zip,
         project_preferences: req.body.project_preferences,
         skills: req.body.skills,
