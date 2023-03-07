@@ -30,7 +30,22 @@ const UserSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: [true, "Address is required"]
+    required: [true, "address is required"]
+  },
+  city: {
+    type: String,
+    required: [true, "city is required"]
+  },
+  zip: {
+    type: String,
+    required: [true, "zipcode is required"],
+    unique: true,
+    validate: {
+        validator: function (zip) {
+            return /(|d{5})/.test(zip);
+        },
+        message: "Not a valid phone number. Please enter a 10 digit phone number"
+    }
   },
   project_preferences: {
     type: [ObjectId],
