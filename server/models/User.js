@@ -39,12 +39,11 @@ const UserSchema = new mongoose.Schema({
   zip: {
     type: String,
     required: [true, "zipcode is required"],
-    unique: true,
     validate: {
-        validator: function (zip) {
-            return /(|d{5})/.test(zip);
-        },
-        message: "Not a valid phone number. Please enter a 10 digit phone number"
+      validator: function (zip) {
+        return /(|d{5})/.test(zip);
+      },
+      message: "Not a valid phone number. Please enter a 10 digit phone number"
     }
   },
   project_preferences: {
