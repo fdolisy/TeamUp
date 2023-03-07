@@ -43,7 +43,6 @@ export default function CreateProfile() {
       selectedProject8,
       selectedProject9
     );
-    console.log(perferences);
 
     axios
       .post("http://localhost:8082/api/register", {
