@@ -41,7 +41,6 @@ const UserSchema = new mongoose.Schema({
   zip: {
     type: String,
     required: [true, "zipcode is required"],
-    unique: true,
     validate: {
       validator: function (zip) {
         return /(|d{5})/.test(zip);

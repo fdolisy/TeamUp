@@ -80,13 +80,12 @@ app.put('/team_submit/:id', async (req, res) => {
         is_finalized: 'true'
       }
     }, { new: true });
-    res.send("Congratulaions! You submitted your team! Is team submitted:" + updatedTeam.is_finalized);
+    res.send("Congratulations! You submitted your team!");
   }
   catch {
     res.status(404)
   }
 });
-
 
 // @route PUT api/teams/:id
 // @description Update team
