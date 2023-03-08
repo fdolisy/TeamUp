@@ -87,7 +87,6 @@ app.put('/team_submit/:id', async (req, res) => {
   }
 });
 
-
 // @route PUT api/teams/:id
 // @description Update team
 // @access Public
