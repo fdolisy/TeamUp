@@ -65,7 +65,6 @@ export default function CreateProfile() {
         extra_information: document.getElementById("additional").value,
       })
       .then((response) => {
-        //navigate("/status");
         toast.success(
           "Sign-up successful. Welcome " +
             document.getElementById("first").value +
