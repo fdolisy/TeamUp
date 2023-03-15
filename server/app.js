@@ -1,17 +1,10 @@
 // app.js
 
-
+require('dotenv').config({ path: './config.env' });
 const express = require('express');
 const connectDB = require('./config/db');
-require('dotenv').config({ path: './config.env' });
-
-
-
 
 const app = express();
-
-
-
 const cors = require('cors');
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -19,10 +12,6 @@ const corsOptions = {
     optionSuccessStatus: 200
 }
 app.use(cors(corsOptions));
-
-
-
-
 
 const team_routes = require('./routes/api/teams');
 const project_routes = require('./routes/api/projects');
@@ -37,12 +26,7 @@ app.use('/api/login', login_route)
 app.use('/api/users', user_routes);
 app.use('api/teams/team_submit', team_submit_routes);
 
-
 // Connect Database
 connectDB();
-
-app.get('/', (req, res) => res.send('Hello world!'));
-
 const port = process.env.PORT || 8082;
-
 app.listen(port, () => console.log(`Server running on port ${port}`));
