@@ -3,24 +3,31 @@ import { useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import emailjs from "emailjs-com";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const project_names = [];
 const objs = [];
 const projectOptions = [];
 
+// get project list
 axios
   .get("http://localhost:8082/api/projects/")
   .then((response) => {
     const project_objects = new Array(response.data);
 
     for (var i = 0; i < project_objects[0].length; i++) {
+      // array of project objects
       objs.push(project_objects[0][i]);
     }
     objs.forEach((object) => {
+      // array of project names
       project_names.push(object["name"]);
     });
 
     for (var i = 0; i < project_names.length; i++) {
+      // used for drop down
       projectOptions.push({ value: objs[i], label: project_names[i] });
     }
   })
@@ -43,7 +50,6 @@ export default function CreateProfile() {
       selectedProject8,
       selectedProject9
     );
-    console.log(perferences);
 
     axios
       .post("http://localhost:8082/api/register", {
@@ -58,29 +64,20 @@ export default function CreateProfile() {
         skills: selectedOptions,
         extra_information: document.getElementById("additional").value,
       })
-      .then((response) => {})
+      .then((response) => {
+        toast.success(
+          "Sign-up successful. Welcome " +
+            document.getElementById("first").value +
+            "!"
+        );
+        setTimeout(() => {
+          navigate("/status");
+        }, 1000);
+      })
       .catch((error) => {
-        console.log(error);
+        toast.error("Please enter try again!");
       });
   }
-
-  // function sendEmail(e) {
-  //   emailjs
-  //     .sendForm(
-  //       "service_vmpq0hj",
-  //       "template_uu0i9ga",
-  //       e.proje,
-  //       "a5a_cbsmyvaYaGgbv"
-  //     )
-  //     .then(
-  //       (result) => {
-  //         window.location.reload(); //This is if you still want the page to reload (since e.preventDefault() cancelled that behavior)
-  //       },
-  //       (error) => {
-  //         console.log(error.text);
-  //       }
-  //     );
-  // }
 
   //skills
   const skills = [
@@ -102,7 +99,7 @@ export default function CreateProfile() {
     setSelectedOptions(Array.isArray(e) ? e.map((skill) => skill.label) : []);
   };
 
-  // projects
+  // handle projects
 
   var selectedProject1 = null;
   const handleProject1 = (e) => {
@@ -153,8 +150,10 @@ export default function CreateProfile() {
         Create Profile
       </h1>
 
-      <div className="flex justify-between w-full px-5">
-        <div className="w-1/2 mx-2 px-12">
+      <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
+
+      <div class="flex justify-between w-full px-5">
+        <div class="w-1/2 mx-2 px-12">
           <form>
             <label htmlFor="input3">Email</label>
             <input
