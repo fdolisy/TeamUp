@@ -60,13 +60,13 @@ export default function JoinTeam() {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Desired Skills
+              Sponsor
             </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Sponsor
+              Desired Skills
             </th>
           </tr>
         </thead>
