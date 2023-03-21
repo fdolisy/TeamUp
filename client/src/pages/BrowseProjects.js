@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 
-export default function JoinTeam() {
+export default function BrowseProjects() {
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
 
