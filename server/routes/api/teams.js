@@ -1,7 +1,7 @@
 // routes/api/teams.js
 // Defines API endpoints for creating, updating, and deleting teams from the database
 
-const { Email } = require('@mui/icons-material');
+const sendEmail = require('../../config/email');
 const express = require('express');
 var app = express();
 app.use(express.json());
@@ -29,8 +29,6 @@ app.get('/', (req, res) => {
       .then(teams => res.json(teams))
       .catch(err => res.status(404).json({ noteamsfound: err }));
   }
-
-
 
   // Otherwise, return all teams
   else {
@@ -83,10 +81,21 @@ app.put('/team_submit/:id', async (req, res) => {
         is_finalized: 'true'
       }
     }, { new: true });
-    res.send("Congratulations! You submitted your team!");
-  }
-  catch {
-    res.status(404)
+
+    // send email confirmation for all members on the team
+    for (let i = 0; i < updatedTeam.members.length; i++) {
+      const member = await User.findById(updatedTeam.members[i]);
+      try {
+        await sendEmail(member.email, "this is a test from capstone - this will be a doc");
+      } catch (error) {
+        console.error(`Error sending email to ${member.email}: ${error}`);
+        res.status(404).json(`Error sending email to ${member.email}: ${error}`);
+        return;
+      }
+    }
+    res.send("Congratulations, you submitted your team! All members should have received an email confirming the project preferences");
+  } catch (error) {
+    res.status(404).json(error)
   }
 });
 
