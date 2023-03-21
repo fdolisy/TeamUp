@@ -4,6 +4,11 @@ import axios from "axios";
 
 export default function JoinTeam() {
   const [projects, setProjects] = useState([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
 
   useEffect(() => {
     axios
@@ -24,6 +29,17 @@ export default function JoinTeam() {
   return (
     <div className="bg-offWhite h-screen">
       <Navbar />
+
+      <div className="py-8 px-8">
+        <input
+          type="text"
+          className={`w-80 p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
+          id="search"
+          value={searchTerm}
+          placeholder="Search by Name"
+          onChange={handleSearch}
+        />
+      </div>
 
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
