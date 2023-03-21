@@ -130,10 +130,6 @@ app.put('/join/:id', auth, (req, res) => {
           if (!team.members.includes(req.body.user_id)) {
             team.members.push(req.body.user_id)
           }
-
-          team.save()
-            .then(team => console.log('User ' + req.body.user_id + ' successfully joined team ' + team.id));
-
         } else {
           console.log("TODO: implement logic for private teams - see issue #17 in GitHub")
         }
@@ -147,37 +143,50 @@ app.put('/join/:id', auth, (req, res) => {
               Team.findById(user.team)
                 .then(old_team => {
 
-                  // remove user from their old team
-                  team_without_user = []
-                  for (let i = 0; i < old_team.members.length; i++) {
-                    if (old_team.members[i] != req.body.user_id) {
-                      team_without_user.push(old_team.members[i])
-                    }
-                  }
-
-                  old_team.members = team_without_user
-
-                  // if this user was the only member on that team, delete the old team completely
-                  if (team_without_user.length == 0) {
-                    old_team.delete()
-                      .then(old_team => console.log("Deleted team " + old_team.id))
+                  // if the user is on a finalized team already, do not allow them to join a new team
+                  if (old_team.is_finalized) {
+                    res.status(400).json({ mgs: 'User ' + user.id + ' is already on a finalized team and cannot join a new one' })
                   } else {
-                    old_team.save()
-                      .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
+
+                    // remove user from their old team
+                    team_without_user = []
+                    for (let i = 0; i < old_team.members.length; i++) {
+                      if (old_team.members[i] != req.body.user_id) {
+                        team_without_user.push(old_team.members[i])
+                      }
+                    }
+
+                    old_team.members = team_without_user
+
+                    // if this user was the only member on that team, delete the old team completely
+                    if (team_without_user.length == 0) {
+                      old_team.delete()
+                        .then(old_team => console.log("Deleted team " + old_team.id))
+                    } else {
+                      old_team.save()
+                        .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
+                    }
+
+                    // add user to their new team
+                    user.team = team.id
+                    user.save()
+                      .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+                    team.save();
+                    res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
                   }
                 })
+            } else {
+              // otherwise, always add the user to the new team
+              user.team = team.id
+              team.save();
+              user.save()
+                .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+              res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
             }
-
-            // add user to their new team
-            user.team = team.id
-            user.save()
-              .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
           })
-
-        res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
       }
     })
-    .catch(err => res.status(404).json({ noteamfound: err }));
+    .catch(err => res.status(400).json({ error: err }));
 });
 
 module.exports = app;
