@@ -7,6 +7,9 @@ var app = express();
 app.use(express.json());
 
 const Team = require('../../models/Team');
+const User = require('../../models/User');
+
+const auth = require("./middleware/auth")
 
 // @route GET api/teams
 // @description Get all teams
@@ -105,6 +108,76 @@ app.delete('/:id', (req, res) => {
   Team.findByIdAndRemove(req.params.id, req.body)
     .then(team => res.json({ mgs: 'Team ' + team.id + ' deleted successfully' }))
     .catch(err => res.status(404).json({ error: err }));
+});
+
+
+// @route PUT api/teams/join/:id
+// @description Allows an authenticated user to join a public/private team
+// @access Private
+// @param ObjectId user_id
+app.put('/join/:id', auth, (req, res) => {
+  Team.findById(req.params.id)
+    .then(team => {
+
+      // do not allow anyone to join a finalized team
+      if (team.is_finalized) {
+        res.status(400).json({ error: 'Team ' + team.id + ' is already finalized and cannot be modified' })
+      } else {
+
+        if (team.is_public) {
+
+          // prevent duplicates of the same user in a team
+          if (!team.members.includes(req.body.user_id)) {
+            team.members.push(req.body.user_id)
+          }
+
+          team.save()
+            .then(team => console.log('User ' + req.body.user_id + ' successfully joined team ' + team.id));
+
+        } else {
+          console.log("TODO: implement logic for private teams - see issue #17 in GitHub")
+        }
+
+        // now, update the user to contain the team ID they are a part of
+        User.findById(req.body.user_id)
+          .then(user => {
+
+            // if the user is already on a team, remove them from that team
+            if (user.team && user.team != team.id) {
+              Team.findById(user.team)
+                .then(old_team => {
+
+                  // remove user from their old team
+                  team_without_user = []
+                  for (let i = 0; i < old_team.members.length; i++) {
+                    if (old_team.members[i] != req.body.user_id) {
+                      team_without_user.push(old_team.members[i])
+                    }
+                  }
+
+                  old_team.members = team_without_user
+
+                  // if this user was the only member on that team, delete the old team completely
+                  if (team_without_user.length == 0) {
+                    old_team.delete()
+                      .then(old_team => console.log("Deleted team " + old_team.id))
+                  } else {
+                    old_team.save()
+                      .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
+                  }
+                })
+            }
+
+            // add user to their new team
+            user.team = team.id
+            user.save()
+              .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+          })
+
+        res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
+      }
+    })
+    .catch(err => res.status(404).json({ noteamfound: err }));
 });
 
 module.exports = app;
