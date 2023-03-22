@@ -63,6 +63,10 @@ const UserSchema = new mongoose.Schema({
   token: {
     type: String,
   },
+  team: {
+    type: ObjectId,
+    required: false,
+  }
 });
 UserSchema.plugin(uniqueValidator, { message: "Email Already Exists." });
 module.exports = User = mongoose.model("User", UserSchema);
