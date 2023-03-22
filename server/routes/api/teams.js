@@ -192,6 +192,7 @@ app.put('/join/:id', auth, (req, res) => {
             })
         } else {
           console.log("TODO: implement logic for private teams - see issue #17 in GitHub")
+          res.status(400).json({ error: "Private team logic not yet implemented" })
         }
       }
     })
