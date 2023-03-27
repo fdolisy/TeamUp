@@ -54,11 +54,9 @@ app.get('/:id', (req, res) => {
 // @param {[mongoose.Schema.Types.ObjectId]} members
 // @param {Boolean} is_public
 // @param {[ObjectID]} team_project_preferences
-// @param {String} password
+// @param {String} team_password
 app.post('/', async (req, res) => {
   var team = req.body
-
-  console.log(team)
 
   if (!team.is_public) {
     // Make sure private teams include a password in the request

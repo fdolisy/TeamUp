@@ -34,7 +34,7 @@ const TeamSchema = new mongoose.Schema({
   timings: {
     type: [String],
     required: true
-  },
+  }
 });
 
 module.exports = Team = mongoose.model('team', TeamSchema);
