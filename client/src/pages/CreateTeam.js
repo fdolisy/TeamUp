@@ -44,12 +44,14 @@ const CreateTeam = () => {
       selectedProject9
     );
     console.log(preferences);
+    console.log(password);
 
     axios
       .post("http://localhost:8082/api/teams", {
         members: [],
         is_public: isPublic,
         team_project_preferences: preferences,
+        team_password: password
       })
       .then((response) => {
         console.log(response.data);
@@ -100,6 +102,11 @@ const CreateTeam = () => {
   var selectedProject9 = null;
   const handleProject9 = (e) => {
     selectedProject9 = e.value;
+  };
+
+  var password = null;
+  const handlePassword = (e) => {
+    password = e.target.value;
   };
 
   return (
@@ -174,6 +181,7 @@ const CreateTeam = () => {
                             name="Team Password"
                             id="team_password"
                             className="py-2 px-3 mt-4 block w-half rounded-md border shadow-sm sm:text-sm "
+                            onChange={handlePassword}
                           />
                         </div>
                       )}
