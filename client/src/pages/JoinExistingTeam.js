@@ -27,15 +27,6 @@ const JoinExistingTeam = () => {
     <div className="bg-offWhite h-screen">
       <Navbar />
 
-      <div className="py-8 px-8">
-        <input
-          type="text"
-          className={`w-80 p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4`}
-          id="search"
-          placeholder="Search by Team Number"
-        />
-      </div>
-
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
