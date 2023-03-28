@@ -76,7 +76,7 @@ export default function BrowseProjects() {
             .filter((project) => {
               return searchTerm.toLowerCase() === ""
                 ? project
-                : project.name.toLowerCase().includes(searchTerm);
+                : project.name.toLowerCase().includes(searchTerm.toLowerCase());
             })
             .map((project) => (
               <tr
