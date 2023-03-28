@@ -1,7 +1,7 @@
 import logo from "./logo.svg";
 import "./App.css";
-import TeamStatus from "./pages/TeamStatus";
 
+import TeamStatus from "./pages/TeamStatus";
 import BrowseProjects from "./pages/BrowseProjects";
 import CreateProfile from "./pages/CreateProfile";
 import CreateTeam from "./pages/CreateTeam";

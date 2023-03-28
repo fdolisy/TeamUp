@@ -41,7 +41,6 @@ const UserSchema = new mongoose.Schema({
   zip: {
     type: String,
     required: [true, "zipcode is required"],
-    unique: true,
     validate: {
       validator: function (zip) {
         return /(|d{5})/.test(zip);
@@ -64,6 +63,10 @@ const UserSchema = new mongoose.Schema({
   token: {
     type: String,
   },
+  team: {
+    type: ObjectId,
+    required: false,
+  }
 });
 UserSchema.plugin(uniqueValidator, { message: "Email Already Exists." });
 module.exports = User = mongoose.model("User", UserSchema);
