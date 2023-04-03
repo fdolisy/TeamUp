@@ -3,6 +3,7 @@
 
 const sendEmail = require('../../config/email');
 const express = require('express');
+const bcrypt = require("bcryptjs");
 var app = express();
 app.use(express.json());
 
@@ -53,8 +54,21 @@ app.get('/:id', (req, res) => {
 // @param {[mongoose.Schema.Types.ObjectId]} members
 // @param {Boolean} is_public
 // @param {[ObjectID]} team_project_preferences
+// @param {String} team_password
 app.post('/', async (req, res) => {
   var team = req.body
+
+  if (!team.is_public) {
+    // Make sure private teams include a password in the request
+    if (!team.team_password || team.team_password === '') {
+      res.json({ msg: 'To create a private team, you must include a team password in the request.' }).status(400)
+      return
+    }
+
+    // Encrypt the team's password before saving it in the database
+    encryptedPassword = await bcrypt.hash(team.team_password, 10).then();
+    team.team_password = encryptedPassword
+  }
 
   // Assign the team number sequentially based on how many teams have already been created
   team.team_number = await Team.countDocuments({}).exec() + 1;
@@ -124,79 +138,82 @@ app.delete('/:id', (req, res) => {
 // @description Allows an authenticated user to join a public/private team
 // @access Private
 // @param ObjectId user_id
-app.put('/join/:id', auth, (req, res) => {
-  Team.findById(req.params.id)
-    .then(team => {
+// @param String password
+app.put('/join/:id', auth, async (req, res) => {
 
-      // do not allow anyone to join a finalized team
-      if (team.is_finalized) {
-        res.status(400).json({ error: 'Team ' + team.id + ' is already finalized and cannot be modified' })
-      } else {
+  var team = await Team.findById(req.params.id)
 
-        if (team.is_public) {
+  // do not allow anyone to join a finalized team
+  if (team.is_finalized) {
+    res.status(400).json({ error: 'Team ' + team.id + ' is already finalized and cannot be modified' })
+    return
+  }
 
-          // prevent duplicates of the same user in a team
-          if (!team.members.includes(req.body.user_id)) {
-            team.members.push(req.body.user_id)
-          }
+  // make sure the password is correct for joining a private team
+  if (!team.is_public) {
+    req_password = req.body.team_password
 
-          // now, update the user to contain the team ID they are a part of
-          User.findById(req.body.user_id)
-            .then(user => {
+    if (!req_password) {
+      res.status(400).json({ error: 'Team ' + team.id + ' is private. Please include a team_password in your request' })
+      return
+    }
 
-              // if the user is already on a team, remove them from that team
-              if (user.team && user.team != team.id) {
-                Team.findById(user.team)
-                  .then(old_team => {
+    bcrypt_result = await bcrypt.compare(req_password, team.team_password)
+    if (!bcrypt_result) {
+      res.status(400).json({ error: 'You have entered an incorrect team password.' })
+      return
+    }
+  }
 
-                    // if the user is on a finalized team already, do not allow them to join a new team
-                    if (old_team.is_finalized) {
-                      res.status(400).json({ mgs: 'User ' + user.id + ' is already on a finalized team and cannot join a new one' })
-                    } else {
+  // now, update the user to contain the team ID they are a part of
+  var user = await User.findById(req.body.user_id)
+  if (!user) {
+    res.status(400).json({ error: 'Invalid user ID' })
+    return
+  }
 
-                      // remove user from their old team
-                      team_without_user = []
-                      for (let i = 0; i < old_team.members.length; i++) {
-                        if (old_team.members[i] != req.body.user_id) {
-                          team_without_user.push(old_team.members[i])
-                        }
-                      }
+  // if the user is already on a team, remove them from that team
+  if (user.team && user.team != team.id) {
+    var old_team = await Team.findById(user.team)
 
-                      old_team.members = team_without_user
+    // if the user is on a finalized team already, do not allow them to join a new team
+    if (old_team.is_finalized) {
+      res.status(400).json({ mgs: 'User ' + user.id + ' is already on a finalized team and cannot join a new one' })
+      return
+    }
 
-                      // if this user was the only member on that team, delete the old team completely
-                      if (team_without_user.length == 0) {
-                        old_team.delete()
-                          .then(old_team => console.log("Deleted team " + old_team.id))
-                      } else {
-                        old_team.save()
-                          .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
-                      }
-
-                      // add user to their new team
-                      user.team = team.id
-                      user.save()
-                        .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
-                      team.save();
-                      res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
-                    }
-                  })
-              } else {
-                // otherwise, always add the user to the new team
-                user.team = team.id
-                team.save();
-                user.save()
-                  .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
-                res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
-              }
-            })
-        } else {
-          console.log("TODO: implement logic for private teams - see issue #17 in GitHub")
-          res.status(400).json({ error: "Private team logic not yet implemented" })
-        }
+    // remove user from their old team
+    team_without_user = []
+    for (let i = 0; i < old_team.members.length; i++) {
+      if (old_team.members[i] != req.body.user_id) {
+        team_without_user.push(old_team.members[i])
       }
-    })
-    .catch(err => res.status(400).json({ error: err }));
+    }
+
+    old_team.members = team_without_user
+
+    // if this user was the only member on that team, delete the old team completely
+    if (team_without_user.length == 0) {
+      old_team.delete()
+        .then(old_team => console.log("Deleted team " + old_team.id))
+    } else {
+      old_team.save()
+        .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
+    }
+
+  }
+
+  user.team = team.id
+  user.save()
+    .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+
+  // prevent duplicates of the same user in a team
+  if (!team.members.includes(req.body.user_id)) {
+    team.members.push(req.body.user_id)
+  }
+
+  team.save();
+  res.json({ mgs: 'User ' + req.body.user_id + ' successfully joined team ' + team.id })
 });
 
 module.exports = app;
