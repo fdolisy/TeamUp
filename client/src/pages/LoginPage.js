@@ -1,10 +1,12 @@
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../components/User";
 
 const LoginPage = () => {
   let navigate = useNavigate();
+  const { setUser, user } = useContext(UserContext);
   const [showAlert, setShowAlert] = useState(false);
 
   function HandleSubmit() {
@@ -14,6 +16,8 @@ const LoginPage = () => {
         password: document.getElementById("password").value,
       })
       .then((response) => {
+        setUser([response.data.userID, response.data.first_name]);
+        console.log(user);
         navigate("/status");
       })
       .catch((error) => {

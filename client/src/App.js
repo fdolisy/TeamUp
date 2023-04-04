@@ -1,26 +1,44 @@
 import logo from "./logo.svg";
 import "./App.css";
 import TeamStatus from "./pages/TeamStatus";
-
-import BrowseProjects from "./pages/BrowseProjects";
+import { useReducer } from "react";
+import JoinExistingTeam from "./pages/JoinExistingTeam";
 import CreateProfile from "./pages/CreateProfile";
 import CreateTeam from "./pages/CreateTeam";
 import LoginPage from "./pages/LoginPage";
-import JoinExistingTeam from "./pages/JoinExistingTeam";
-
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import UserContext from "./components/User";
+
 var cors = require("cors");
 
+// const userData = {
+//   id: "",
+//   first_name: "",
+//   last_name: "",
+//   email: "",
+//   project_pref: [],
+//   skills: [],
+//   logged_in: false,
+//   team_id: "",
+// };
+
+function reducer(state, userData) {
+  return { ...state, userData };
+}
+
 function App() {
+  const [user, setUser] = useReducer(reducer, []);
+
   return (
-    <Routes>
-      <Route path="/status" element={<TeamStatus />} />
-      <Route path="/create" element={<CreateTeam />} />
-      <Route path="/profile" element={<CreateProfile />} />
-      <Route path="/browse" element={<BrowseProjects />} />
-      <Route path="/join" element={<JoinExistingTeam />} />
-      <Route path="/" element={<LoginPage />} />
-    </Routes>
+    <UserContext.Provider value={{ user, setUser }}>
+      <Routes>
+        <Route path="/status" element={<TeamStatus />} />
+        <Route path="/create" element={<CreateTeam />} />
+        <Route path="/profile" element={<CreateProfile />} />
+        <Route path="/join" element={<JoinExistingTeam />} />
+        <Route path="/" element={<LoginPage />} />
+      </Routes>
+    </UserContext.Provider>
   );
 }
 
