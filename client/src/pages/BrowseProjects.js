@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import { useNavigate, useHistory } from "react-router-dom";
 import axios from "axios";
 
 export default function BrowseProjects() {
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
+  let navigate = useNavigate();
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -23,7 +25,7 @@ export default function BrowseProjects() {
   }, []);
 
   function handleClick(project) {
-    console.log(`Clicked on project "${project.name}"`);
+    navigate(`/details`, { state: { project } });
   }
 
   return (
