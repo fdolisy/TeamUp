@@ -9,6 +9,7 @@ app.use(express.json());
 
 const Team = require('../../models/Team');
 const User = require('../../models/User');
+const Project = require('../../models/Project');
 
 const auth = require("./middleware/auth")
 
@@ -96,11 +97,18 @@ app.put('/team_submit/:id', async (req, res) => {
       }
     }, { new: true });
 
+    //insert all needed data (the information we want the team members to see) into 'post'
+    const post = await Team.findById(req.params.id, 'team_number timings members team_project_preferences')
+      .lean()
+      .exec();
+    
+      var displayPost = await displayTeamData(post);
+    
     // send email confirmation for all members on the team
     for (let i = 0; i < updatedTeam.members.length; i++) {
       const member = await User.findById(updatedTeam.members[i]);
       try {
-        await sendEmail(member.email, "this is a test from capstone - this will be a doc");
+        await sendEmail(member.email, displayPost);
       } catch (error) {
         console.error(`Error sending email to ${member.email}: ${error}`);
         res.status(404).json(`Error sending email to ${member.email}: ${error}`);
@@ -112,6 +120,41 @@ app.put('/team_submit/:id', async (req, res) => {
     res.status(404).json(error)
   }
 });
+
+//funcation to use in the submit team request in order to display team data to each member's email
+async function displayTeamData(post) {
+  var display = "Congrats! You submitted your team to Capstone! ";
+  //display team number
+  display += "Your team number is: " + post.team_number + ". Remember that for future presentations.\n" 
+          + "This is the information we have from your submission: \n"; 
+  display += "\n";
+  //display project preferences
+  for(let i = 0; i < 1; i++){
+    var projectID = post.team_project_preferences[i].toString();
+    var project = await Project.findOne({_id: projectID}).exec();
+    display += "Project preference " + (1+i) + ": " + project.name + "\n";
+  }
+  display += "\n";
+  //display timings
+  for(let i = 0; i < post.timings.length; i++){
+    var timing = post.timings[i].toString();
+    display += "Preferred timing " + (1+i) + ": " + timing + "\n";
+  }
+  display += "\n";
+  //display each member's info
+  for(let i = 0; i < post.members.length; i++){
+    var memberID = post.members[i].toString();
+    var member = await User.findOne({_id: memberID}).exec();
+    display += "Member " + (i+1) + ": " 
+            + member.first_name + " " + member.last_name 
+            + " | email: " + member.email 
+            + " | address: " + member.address + ", " + member.city + ", " + member.zip 
+            + "\n";
+  }
+  display += "\nPlease keep in mind this is a NO REPLY email, and it has an unmontired inbox. Refer to your team members' emails, and contact them separately from this email."
+          + "\n\nSincerely, \nTeamUp";
+  return display;
+}
 
 // @route PUT api/teams/:id
 // @description Update team
