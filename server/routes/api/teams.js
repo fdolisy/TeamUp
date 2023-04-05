@@ -88,37 +88,36 @@ app.post('/', async (req, res) => {
 // @param [String] timings
 // @param {Boolean} is_finalized
 app.put('/team_submit/:id', async (req, res) => {
-
-  try {
-    const updatedTeam = await Team.findByIdAndUpdate(req.params.id, {
-      $set: {
-        timings: req.body.timings,
-        is_finalized: 'true'
+    try {
+      const updatedTeam = await Team.findByIdAndUpdate(req.params.id, {
+        $set: {
+          timings: req.body.timings,
+          is_finalized: 'true'
+        }
+      }, { new: true });
+  
+      //insert all needed data (the information we want the team members to see) into 'post'
+      const post = await Team.findById(req.params.id, 'team_number timings members team_project_preferences')
+        .lean()
+        .exec();
+      
+        var displayPost = await displayTeamData(post);
+      
+      // send email confirmation for all members on the team
+      for (let i = 0; i < updatedTeam.members.length; i++) {
+        const member = await User.findById(updatedTeam.members[i]);
+        try {
+          await sendEmail(member.email, displayPost);
+        } catch (error) {
+          console.error(`Error sending email to ${member.email}: ${error}`);
+          res.status(404).json(`Error sending email to ${member.email}: ${error}`);
+          return;
+        }
       }
-    }, { new: true });
-
-    //insert all needed data (the information we want the team members to see) into 'post'
-    const post = await Team.findById(req.params.id, 'team_number timings members team_project_preferences')
-      .lean()
-      .exec();
-    
-      var displayPost = await displayTeamData(post);
-    
-    // send email confirmation for all members on the team
-    for (let i = 0; i < updatedTeam.members.length; i++) {
-      const member = await User.findById(updatedTeam.members[i]);
-      try {
-        await sendEmail(member.email, displayPost);
-      } catch (error) {
-        console.error(`Error sending email to ${member.email}: ${error}`);
-        res.status(404).json(`Error sending email to ${member.email}: ${error}`);
-        return;
-      }
-    }
-    res.send("Congratulations, you submitted your team! All members should have received an email confirming the project preferences");
-  } catch (error) {
-    res.status(404).json(error)
-  }
+      res.send("Congratulations, you submitted your team! All members should have received an email confirming the project preferences");
+    } catch (error) {
+      res.status(404).json(error)
+    }  
 });
 
 //funcation to use in the submit team request in order to display team data to each member's email
@@ -151,8 +150,8 @@ async function displayTeamData(post) {
             + " | address: " + member.address + ", " + member.city + ", " + member.zip 
             + "\n";
   }
-  display += "\nPlease keep in mind this is a NO REPLY email, and it has an unmontired inbox. Refer to your team members' emails, and contact them separately from this email."
-          + "\n\nSincerely, \nTeamUp";
+  display += "\nPlease keep in mind this is a NO REPLY email, and it has an unmontired inbox."
+          + "\n\Best of luck, \nTeamUp";
   return display;
 }
 
