@@ -151,7 +151,7 @@ async function displayTeamData(post) {
             + "\n";
   }
   display += "\nPlease keep in mind this is a NO REPLY email, and it has an unmontired inbox."
-          + "\n\Best of luck, \nTeamUp";
+          + "\n\nBest of luck, \nTeamUp";
   return display;
 }
 
