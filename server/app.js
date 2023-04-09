@@ -26,6 +26,41 @@ app.use('/api/login', login_route)
 app.use('/api/users', user_routes);
 app.use('api/teams/team_submit', team_submit_routes);
 
+// SAML configuration
+const passport = require("passport");
+const saml = require("passport-saml");
+const fs = require('fs');
+
+const samlStrategy = new saml.Strategy(
+    {
+        callbackUrl: "/login-idp/callback",
+
+        // TODO: get these values from UTD IDP
+        entryPoint: "https://idp.webapplication.com/idp/profile/SAML2/Redirect/SSO",
+        issuer: "mywebapp-saml",
+
+        decryptionPvk: fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
+        privateCert: fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
+        cert: fs.readFileSync("./saml_config/idp_key.pem", "utf8"),
+    },
+    function (profile, done) {
+        return done(null, profile);
+    }
+);
+
+passport.use("samlStrategy", samlStrategy);
+
+app.route("/metadata").get(function (req, res) {
+    res.type("application/xml");
+    res.status(200);
+    res.send(
+        samlStrategy.generateServiceProviderMetadata(
+            fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
+            fs.readFileSync("./saml_config/sp-cert.pem", "utf8")
+        )
+    );
+});
+
 // Connect Database
 connectDB();
 const port = process.env.PORT || 8082;
