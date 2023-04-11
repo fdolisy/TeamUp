@@ -118,46 +118,13 @@ app.put('/team_submit/:id', async (req, res) => {
         return;
       }
     }
-    res.send("Congratulations, you submitted your team! All members should have received an email confirming the project preferences");
+    res.send("Congratulations, you submitted your team! All members should have received an email confirming the project preferences.");
   } catch (error) {
     res.status(404).json(error)
   }
 });
 
-// @route GET api/teams/submit_all
-// @description Update team
-// @access Public
-app.get('/submit_all/', async (req, res) => {
-      
-  //var teams = Team.find()
-      //.then(teams => res.json(teams))
-      //.catch(err => res.status(404).json({ noteamsfound: err }));
-  
-      console.log("heree");
-      const teams = await Team.find().lean();
-      console.log('Found teams:', teams);
-  
-      //send eam info to CSV file
-      try {
-        const csv = json2csv({ data: teams });
-        console.log("Generated CSV: ", csv);
-  
-        var filePath = path.join(_dirname, 'final_teams_info.csv');
-        //fs.writeFileSync(filePath, csv, 'utf-8');
-        if (fs.existsSync(filePath)) {
-          fs.writeFileSync(filePath, csv, 'utf-8');
-          console.log('Created CSV file:', filePath);
-        } else {
-          console.log('Directory does not exist or is not writable');
-        }
-        console.log('Created CSV file:', filePath);
-      } catch (error) {
-        console.error('Error writing CSV file:', error);
-        console.log("error");
-      }
-});
-
-//funcation to use in the submit team request in order to display team data to each member's email
+//funcation to use in the submit_team request in order to display team data to each member's email
 async function displayTeamData(post) {
   var display = "Congrats! You submitted your team to Capstone! ";
   //display team number
