@@ -19,12 +19,14 @@ const login_route = require('./routes/api/login');
 const registration_route = require('./routes/api/registration');
 const user_routes = require('./routes/api/users');
 const team_submit_routes = require('./routes/api/teams');
+const submit_all_routes = require('./routes/api/teams');
 app.use('/api/teams', team_routes);
 app.use('/api/projects', project_routes)
 app.use('/api/register', registration_route)
 app.use('/api/login', login_route)
 app.use('/api/users', user_routes);
 app.use('api/teams/team_submit', team_submit_routes);
+app.use('/api/submit_all', submit_all_routes);
 
 // Connect Database
 connectDB();
