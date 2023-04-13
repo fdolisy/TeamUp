@@ -19,6 +19,10 @@ const TeamSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
+  team_password: {
+    type: String,
+    required: false,
+  },
   is_finalized: {
     type: Boolean,
     required: true
@@ -29,7 +33,7 @@ const TeamSchema = new mongoose.Schema({
   },
   timings: {
     type: [String],
-    required: true 
+    required: true
   }
 });
 

@@ -34,7 +34,6 @@ app.post("/", async (req, res) => {
         validSignIn: "Valid Sign in",
         token: token,
         userID: user._id,
-        first_name: user.first_name,
       });
     } else {
       res.status(400).json({ passwordIncorrect: "Password incorrect" });
