@@ -16,8 +16,12 @@ const LoginPage = () => {
         password: document.getElementById("password").value,
       })
       .then((response) => {
-        setUser([response.data.userID, response.data.first_name]);
-        console.log(user);
+        setUser({
+          ...user,
+          id: response.data.userID,
+          first_name: response.data.first_name,
+          logged_in: true,
+        });
         navigate("/status");
       })
       .catch((error) => {
@@ -29,7 +33,6 @@ const LoginPage = () => {
   function HandleSignUp() {
     navigate("/profile");
   }
-
   return (
     <div className="bg-offWhite">
       <Navbar />

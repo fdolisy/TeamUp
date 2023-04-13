@@ -19,8 +19,6 @@ export default function Starting() {
 
   const user = useContext(UserContext);
   console.log(user);
-  // console.log(user.user);
-  // console.log(user.user.user);
   return (
     <div className="bg-offWhite">
       <Navbar />
@@ -29,7 +27,7 @@ export default function Starting() {
           <div className="shadow-lg rounded-lg w-[500px] p-3">
             <div className="space-y-4">
               <div className="text-6xl font-bold">
-                Greetings {user.user.userData[1]}
+                Greetings {user.user.first_name}
               </div>
               <div className="text-lg"> Please make a selection</div>
               <div className="flex flex-col space-y-4 py-4">

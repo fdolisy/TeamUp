@@ -11,23 +11,28 @@ import UserContext from "./components/User";
 
 var cors = require("cors");
 
-// const userData = {
-//   id: "",
-//   first_name: "",
-//   last_name: "",
-//   email: "",
-//   project_pref: [],
-//   skills: [],
-//   logged_in: false,
-//   team_id: "",
-// };
+const initialUserData = {
+  id: "",
+  first_name: "",
+  // last_name: "",
+  // email: "",
+  // project_pref: [],
+  // skills: [],
+  logged_in: false,
+  // team_id: "",
+};
 
 function reducer(state, userData) {
-  return { ...state, userData };
+  return {
+    ...state,
+    id: userData.id,
+    first_name: userData.first_name,
+    logged_in: userData.logged_in,
+  };
 }
 
 function App() {
-  const [user, setUser] = useReducer(reducer, []);
+  const [user, setUser] = useReducer(reducer, initialUserData);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
