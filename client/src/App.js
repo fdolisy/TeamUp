@@ -11,29 +11,9 @@ import ProjectDetails from "./pages/ProjectDetails";
 import ProfileDashboard from "./pages/ProfileDashboard";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import UserContext from "./components/User";
+import { UserContext, initialUserData, reducer } from "./components/User";
 
 var cors = require("cors");
-
-const initialUserData = {
-  id: "",
-  first_name: "",
-  // last_name: "",
-  // email: "",
-  // project_pref: [],
-  // skills: [],
-  logged_in: false,
-  // team_id: "",
-};
-
-function reducer(state, userData) {
-  return {
-    ...state,
-    id: userData.id,
-    first_name: userData.first_name,
-    logged_in: userData.logged_in,
-  };
-}
 
 function App() {
   const [user, setUser] = useReducer(reducer, initialUserData);

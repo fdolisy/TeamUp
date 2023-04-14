@@ -30,6 +30,7 @@ app.post("/", async (req, res) => {
         }
       );
       user.token = token;
+      await user.save();
       res.status(200).json({
         validSignIn: "Valid Sign in",
         token: token,

@@ -8,20 +8,22 @@ const LoginPage = () => {
   let navigate = useNavigate();
   const { setUser, user } = useContext(UserContext);
   const [showAlert, setShowAlert] = useState(false);
+  const apiURL = "http://localhost:8082/api";
 
   function HandleSubmit() {
     axios
-      .post("http://localhost:8082/api/login", {
+      .post(`${apiURL}/login`, {
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
       })
       .then((response) => {
         setUser({
           ...user,
+          token: response.data.token,
           id: response.data.userID,
-          first_name: response.data.first_name,
           logged_in: true,
         });
+        // console.log(user);
         navigate("/status");
       })
       .catch((error) => {
