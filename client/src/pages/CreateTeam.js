@@ -50,10 +50,10 @@ const CreateTeam = () => {
 
     axios
       .post("http://localhost:8082/api/teams", {
-        members: [user.user.userData[0]],
+        members: user.id,
         is_public: isPublic,
         team_project_preferences: preferences,
-        team_password: password
+        team_password: password,
       })
       .then((response) => {
         console.log(response.data);

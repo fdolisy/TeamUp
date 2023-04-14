@@ -19,7 +19,6 @@ export default function Starting() {
   }
   const { setUser, user } = useContext(UserContext);
   const apiURL = "http://localhost:8082/api";
-
   const authAxios = axios.create({
     baseURL: apiURL,
     headers: {
