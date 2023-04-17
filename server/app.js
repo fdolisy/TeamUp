@@ -34,10 +34,8 @@ const fs = require('fs');
 const samlStrategy = new saml.Strategy(
     {
         callbackUrl: "/login-idp/callback",
-
-        // TODO: get these values from UTD IDP
-        entryPoint: "https://idp.webapplication.com/idp/profile/SAML2/Redirect/SSO",
-        issuer: "mywebapp-saml",
+        entryPoint: "https://idptest.utdallas.edu/idp/shibboleth",
+        issuer: "http://csa-4485-02.utdallas.edu/",
 
         decryptionPvk: fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
         privateCert: fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
