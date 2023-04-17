@@ -1,7 +1,7 @@
 import React from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
-import GroupsIcon from '@mui/icons-material/Groups';
+import GroupsIcon from "@mui/icons-material/Groups";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 
@@ -9,10 +9,10 @@ export default function Navbar() {
   let navigate = useNavigate();
 
   function handleClick() {
-    navigate("/");
+    navigate("/status");
   }
   function profile() {
-    navigate("/profile")
+    navigate("/dashboard");
   }
 
   return (
@@ -27,7 +27,11 @@ export default function Navbar() {
         </div>
         <div className="space-x-5">
           <IconButton aria-label="web-access">
-            <PersonIcon className="text-offWhite" fontSize="large" onClick={profile} />
+            <PersonIcon
+              className="text-offWhite"
+              fontSize="large"
+              onClick={profile}
+            />
           </IconButton>
           <IconButton aria-label="settings">
             <SettingsIcon className="text-offWhite" fontSize="large" />
