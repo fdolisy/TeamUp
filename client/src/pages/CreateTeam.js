@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 // import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState, useContext } from "react";
@@ -9,9 +9,9 @@ import UserContext from "../components/User";
 const project_names = [];
 const objs = [];
 const projectOptions = [];
-
+const apiURL = "http://localhost:8082/api";
 axios
-  .get("http://localhost:8082/api/projects/")
+  .get(`${apiURL}/projects`)
   .then((response) => {
     const project_objects = new Array(response.data);
 
@@ -29,10 +29,10 @@ axios
   .catch((error) => {
     console.log(error);
   });
-
 const CreateTeam = () => {
   const user = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
+  const [teamNumber, setTeamNum] = useState(0);
   function handleSubmit() {
     const preferences = new Array(
       selectedProject1,
@@ -45,11 +45,11 @@ const CreateTeam = () => {
       selectedProject8,
       selectedProject9
     );
-    console.log(preferences);
-    console.log(password);
+    // console.log(preferences);
+    // console.log(password);
 
     axios
-      .post("http://localhost:8082/api/teams", {
+      .post(`${apiURL}/teams`, {
         members: user.id,
         is_public: isPublic,
         team_project_preferences: preferences,
@@ -111,6 +111,15 @@ const CreateTeam = () => {
     password = e.target.value;
   };
 
+  axios
+    .get(`${apiURL}/teams`)
+    .then((response) => {
+      setTeamNum(Object.keys(response.data).length + 1);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  // console.log(user);
   return (
     <div className="bg-offWhite">
       <Navbar />
@@ -118,7 +127,7 @@ const CreateTeam = () => {
       <div className="flex flex-col">
         <div className="basis-5/6 px-4">
           <h1 className="text-4xl text-center font-bold text-orange py-4">
-            Team X
+            Team {teamNumber}
           </h1>
           <div className="flex flex-col shadow sm:rounded-md">
             <div className="mt-5 sm:mt-0">
@@ -201,6 +210,11 @@ const CreateTeam = () => {
                 <form>
                   <label htmlFor="input3">Choice 1</label>
                   <Select
+                    value={{
+                      label: user.user.project_preferences[0].name,
+                      value: user.user.project_preferences[0],
+                    }}
+                    // value={{ label: "2000", value: "2001" }}
                     options={projectOptions}
                     onChange={handleProject1}
                     className=" py-2 w-full"

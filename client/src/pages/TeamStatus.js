@@ -34,7 +34,7 @@ export default function Starting() {
         first_name: response.data.first_name,
         last_name: response.data.last_name,
         email: response.data.email,
-        project_pref: response.data.project_pref,
+        project_preferences: response.data.project_preferences,
         skills: response.data.skills,
         team_id: response.data.team_id,
       });
