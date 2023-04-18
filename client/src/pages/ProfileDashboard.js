@@ -5,6 +5,7 @@ import axios from "axios";
 import UserContext from "../components/User";
 import { useNavigate } from "react-router-dom";
 var names = [];
+var address = "";
 
 export default function ProfileDashboard() {
   const { setUser, user } = useContext(UserContext);
@@ -23,7 +24,14 @@ export default function ProfileDashboard() {
       .get(`${apiURL}/users/${user.id}`)
       .then((response) => {
         setProjects(response.data.project_preferences);
-        console.log(projects);
+        console.log(response.data);
+        address =
+          response.data.address +
+          " " +
+          response.data.city +
+          " " +
+          response.data.zip;
+        console.log(address);
       })
       .catch((error) => {
         console.log(error);
@@ -49,15 +57,31 @@ export default function ProfileDashboard() {
     <div className="bg-offWhite h-screen">
       <Navbar />
 
-      <div className="text-green py-20 px-8">
+      <div className="bg-offWhite h-screen text-green py-20 px-8">
         <div className="max-w-3xl mx-auto">
           <h2 className="text-4xl font-bold mb-8">
             {user.first_name} {user.last_name}
           </h2>
+
           <div className="grid grid-cols-2 gap-8">
             <div>
               <p className="text-2xl font-bold mb-4">Email:</p>
               <p className="text-xl">{user.email}</p>
+              <div className="py-10">
+                <p className="text-2xl font-bold mb-4">Address:</p>
+                <p className="text-xl">{address}</p>
+              </div>
+
+              <div>
+                <p className="text-2xl font-bold mb-4">Skills:</p>
+                <ul>
+                  {user.skills.map((skill) => (
+                    <li className="text-xl" key={skill}>
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <div>
               <p className="text-2xl font-bold mb-4">Top 9 Projects:</p>
@@ -65,16 +89,6 @@ export default function ProfileDashboard() {
                 {projectNames.map((project, index) => (
                   <li className="text-xl" key={index}>
                     {project}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-2">
-              <p className="text-2xl font-bold mb-4">Skills:</p>
-              <ul>
-                {user.skills.map((skill) => (
-                  <li className="text-xl" key={skill}>
-                    {skill}
                   </li>
                 ))}
               </ul>
