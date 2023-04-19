@@ -50,7 +50,7 @@ const samlStrategy = new saml.Strategy(
 
 passport.use("samlStrategy", samlStrategy);
 
-app.route("/metadata").get(function (req, res) {
+app.route("/api/metadata").get(function (req, res) {
     res.type("application/xml");
     res.status(200);
     res.send(
