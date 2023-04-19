@@ -13,21 +13,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
-const team_routes = require('./routes/api/teams');
-const project_routes = require('./routes/api/projects');
-const login_route = require('./routes/api/login');
-const registration_route = require('./routes/api/registration');
-const user_routes = require('./routes/api/users');
-const team_submit_routes = require('./routes/api/teams');
-const submit_all_routes = require('./routes/api/teams');
-app.use('/api/teams', team_routes);
-app.use('/api/projects', project_routes)
-app.use('/api/register', registration_route)
-app.use('/api/login', login_route)
-app.use('/api/users', user_routes);
-app.use('api/teams/team_submit', team_submit_routes);
-app.use('/api/submit_all', submit_all_routes);
-
 // SAML configuration
 const passport = require("passport");
 const saml = require("passport-saml");
@@ -49,6 +34,28 @@ const samlStrategy = new saml.Strategy(
 );
 
 passport.use("samlStrategy", samlStrategy);
+
+const team_routes = require('./routes/api/teams');
+const project_routes = require('./routes/api/projects');
+const login_route = require('./routes/api/login');
+const registration_route = require('./routes/api/registration');
+const user_routes = require('./routes/api/users');
+const team_submit_routes = require('./routes/api/teams');
+const submit_all_routes = require('./routes/api/teams');
+app.use('/api/teams', team_routes);
+app.use('/api/projects', project_routes)
+app.use('/api/register', registration_route)
+app.use('/api/login', login_route)
+app.use('/api/users', user_routes);
+app.use('api/teams/team_submit', team_submit_routes);
+app.use('/api/submit_all', submit_all_routes);
+
+app.get('/api/SSOLogin',
+    passport.authenticate('samlStrategy', { failureRedirect: '/', failureFlash: true }),
+    function (req, res) {
+        res.redirect('/');
+    }
+);
 
 app.route("/api/metadata").get(function (req, res) {
     res.type("application/xml");
