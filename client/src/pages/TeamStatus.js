@@ -1,23 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import UserContext from "../components/User";
 import axios from "axios";
 
 export default function Starting() {
   let navigate = useNavigate();
-
-  function createTeam() {
-    navigate("/create");
-  }
-
-  function browseProjects() {
-    navigate("/browse");
-  }
-  function joinExistingTeam() {
-    navigate("/join");
-  }
   const { setUser, user } = useContext(UserContext);
+
   const apiURL = "http://localhost:8082/api";
   const authAxios = axios.create({
     baseURL: apiURL,
@@ -42,6 +32,17 @@ export default function Starting() {
     .catch((error) => {
       console.log(error);
     });
+
+  function createTeam() {
+    navigate("/create");
+  }
+
+  function browseProjects() {
+    navigate("/browse");
+  }
+  function joinExistingTeam() {
+    navigate("/join");
+  }
 
   return (
     <div className="bg-offWhite">
