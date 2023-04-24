@@ -12,7 +12,18 @@ const Project = require('../../models/Project');
 // @description Get single user's information by id
 // @access Private
 app.get('/:id', auth, async (req, res) => {
-  var user = await User.findById(req.params.id)
+
+  try {
+    var user = await User.findById(req.params.id)
+  } catch (error) {
+    res.status(404).json({ nouserfound: error })
+    return
+  }
+
+  if (!user) {
+    res.status(404).json({ nouserfound: "Please input a valid user ID" })
+    return
+  }
 
   project_ids = user.project_preferences;
 
