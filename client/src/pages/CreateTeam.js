@@ -1,9 +1,10 @@
 import React from "react";
 // import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Select from "react-select";
 import axios from "axios";
+import UserContext from "../components/User";
 
 const project_names = [];
 const objs = [];
@@ -30,6 +31,7 @@ axios
   });
 
 const CreateTeam = () => {
+  const user = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
   function handleSubmit() {
     const preferences = new Array(
@@ -48,10 +50,10 @@ const CreateTeam = () => {
 
     axios
       .post("http://localhost:8082/api/teams", {
-        members: [],
+        members: user.id,
         is_public: isPublic,
         team_project_preferences: preferences,
-        team_password: password
+        team_password: password,
       })
       .then((response) => {
         console.log(response.data);

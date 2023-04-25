@@ -1,19 +1,28 @@
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../components/User";
 
 const LoginPage = () => {
   let navigate = useNavigate();
+  const { setUser, user } = useContext(UserContext);
   const [showAlert, setShowAlert] = useState(false);
+  const apiURL = "http://localhost:8082/api";
 
   function HandleSubmit() {
     axios
-      .post("http://localhost:8082/api/login", {
+      .post(`${apiURL}/login`, {
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
       })
       .then((response) => {
+        setUser({
+          ...user,
+          token: response.data.token,
+          id: response.data.userID,
+          logged_in: true,
+        });
         navigate("/status");
       })
       .catch((error) => {
@@ -25,7 +34,6 @@ const LoginPage = () => {
   function HandleSignUp() {
     navigate("/profile");
   }
-
   return (
     <div className="bg-offWhite">
       <Navbar />

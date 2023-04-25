@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
+import { useNavigate, useHistory } from "react-router-dom";
 import axios from "axios";
 
 export default function BrowseProjects() {
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = React.useState("");
+  let navigate = useNavigate();
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -23,7 +25,7 @@ export default function BrowseProjects() {
   }, []);
 
   function handleClick(project) {
-    console.log(`Clicked on project "${project.name}"`);
+    navigate(`/details`, { state: { project } });
   }
 
   return (
@@ -72,28 +74,34 @@ export default function BrowseProjects() {
         </thead>
 
         <tbody className="bg-offWhite divide-y divide-gray-200">
-          {projects.map((project) => (
-            <tr
-              className="hover:bg-orange cursor-pointer"
-              key={project.id}
-              onClick={() => handleClick(project)}
-            >
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm font-medium text-gray-900">
-                  {project.name}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{project.number}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-500">{project.sponsor}</div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {project.desired_skills.join(", ")}
-              </td>
-            </tr>
-          ))}
+          {projects
+            .filter((project) => {
+              return searchTerm.toLowerCase() === ""
+                ? project
+                : project.name.toLowerCase().includes(searchTerm.toLowerCase());
+            })
+            .map((project) => (
+              <tr
+                className="hover:bg-orange cursor-pointer"
+                key={project.id}
+                onClick={() => handleClick(project)}
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">
+                    {project.name}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">{project.number}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-500">{project.sponsor}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {project.desired_skills.join(", ")}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
