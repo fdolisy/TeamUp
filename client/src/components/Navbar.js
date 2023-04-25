@@ -13,6 +13,9 @@ export default function Navbar() {
   const { setUser, user } = useContext(UserContext);
   const apiURL = "http://localhost:8082/api";
 
+  function handleClick() {
+    navigate("/status");
+  }
   function profile() {
     navigate("/dashboard");
   }
@@ -40,7 +43,10 @@ export default function Navbar() {
   return (
     <div className="bg-green py-4">
       <div className="flex justify-between place-items-center relative container text-offWhite">
-        <div className="flex place-items-center relative space-x-5 rounded-xl">
+        <div
+          onClick={handleClick}
+          className="flex place-items-center relative space-x-5 rounded-xl"
+        >
           <GroupsIcon sx={{ fontSize: 65 }} />
           <div className="text-5xl font-bold">TeamUp!</div>
         </div>
