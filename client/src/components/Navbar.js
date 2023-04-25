@@ -1,18 +1,43 @@
 import React from "react";
 import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import GroupsIcon from "@mui/icons-material/Groups";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState, useContext } from "react";
+import UserContext from "../components/User";
 
 export default function Navbar() {
   let navigate = useNavigate();
+  const { setUser, user } = useContext(UserContext);
+  const apiURL = "http://localhost:8082/api";
 
   function handleClick() {
     navigate("/status");
   }
   function profile() {
     navigate("/dashboard");
+  }
+  function logOut() {
+    const authAxios = axios.create({
+      baseURL: apiURL,
+      headers: {
+        "x-access-token": user.token,
+      },
+    });
+
+    authAxios
+      .put(`${apiURL}/users/${user.id}`, { logged_in: false })
+      .then((response) => {
+        setUser({
+          logged_in: false,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    navigate("/");
   }
 
   return (
@@ -34,7 +59,11 @@ export default function Navbar() {
             />
           </IconButton>
           <IconButton aria-label="settings">
-            <SettingsIcon className="text-offWhite" fontSize="large" />
+            <LogoutIcon
+              className="text-offWhite"
+              onClick={logOut}
+              fontSize="large"
+            />
           </IconButton>
         </div>
       </div>

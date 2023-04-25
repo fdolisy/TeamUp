@@ -23,7 +23,6 @@ const LoginPage = () => {
           id: response.data.userID,
           logged_in: true,
         });
-        // console.log(user);
         navigate("/status");
       })
       .catch((error) => {
