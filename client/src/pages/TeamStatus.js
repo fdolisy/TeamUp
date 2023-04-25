@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import UserContext from "../components/User";
 import axios from "axios";
 
@@ -26,29 +26,50 @@ export default function Starting() {
     },
   });
 
-  authAxios
-    .get(`${apiURL}/users/${user.id}`)
-    .then((response) => {
-      setUser({
-        ...user,
-        first_name: response.data.first_name,
-        last_name: response.data.last_name,
-        email: response.data.email,
-        project_preferences: response.data.project_preferences,
-        skills: response.data.skills,
-        team_id: response.data.team_id,
+  // const fetchUserData = useCallback(async () => {
+  //   try {
+  //     console.log("hi");
+  //     const response = await authAxios.get(`${apiURL}/users/${user.id}`);
+  //     setUser({
+  //       ...user,
+  //       first_name: response.data.first_name,
+  //       last_name: response.data.last_name,
+  //       email: response.data.email,
+  //       project_preferences: response.data.project_preferences,
+  //       skills: response.data.skills,
+  //       team_id: response.data.team_id,
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // });
+  // fetchUserData();
+
+  useEffect(() => {
+    authAxios
+      .get(`${apiURL}/users/${user.id}`)
+      .then((response) => {
+        setUser({
+          ...user,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          email: response.data.email,
+          project_preferences: response.data.project_preferences,
+          skills: response.data.skills,
+          team_id: response.data.team_id,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  }, []);
 
   return (
     <div className="bg-offWhite">
       <Navbar />
       <div className="flex h-screen">
         <div className="flex flex-col m-auto">
-          <div className="shadow-lg rounded-lg w-[500px] p-3">
+          <div className="shadow-lg rounded-lg w-[600px] p-3">
             <div className="space-y-4">
               <div className="text-6xl font-bold">
                 Greetings {user.first_name}

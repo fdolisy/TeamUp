@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 // import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import UserContext from "../components/User";
@@ -110,16 +110,17 @@ const CreateTeam = () => {
   const handlePassword = (e) => {
     password = e.target.value;
   };
-
-  axios
-    .get(`${apiURL}/teams`)
-    .then((response) => {
-      setTeamNum(Object.keys(response.data).length + 1);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-  // console.log(user);
+  useEffect(() => {
+    axios
+      .get(`${apiURL}/teams`)
+      .then((response) => {
+        setTeamNum(Object.keys(response.data).length + 1);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+  console.log(user.user.project_preferences[0]);
   return (
     <div className="bg-offWhite">
       <Navbar />
@@ -210,14 +211,15 @@ const CreateTeam = () => {
                 <form>
                   <label htmlFor="input3">Choice 1</label>
                   <Select
-                    value={{
-                      label: user.user.project_preferences[0].name,
-                      value: user.user.project_preferences[0],
-                    }}
-                    // value={{ label: "2000", value: "2001" }}
                     options={projectOptions}
+                    value={{ label: "2000", value: "2001" }}
                     onChange={handleProject1}
+                    defaultValue={{ label: 2002, value: 2002 }}
                     className=" py-2 w-full"
+                    // value={{
+                    //   label: user.user.project_preferences[0],
+                    //   value: user.user.project_preferences[0],
+                    // }}
                   />
                 </form>
               </div>
