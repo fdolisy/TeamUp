@@ -2,6 +2,7 @@
 
 require('dotenv').config({ path: './config.env' });
 const express = require('express');
+var path = require('path');
 const connectDB = require('./config/db');
 
 const app = express();
@@ -12,28 +13,6 @@ const corsOptions = {
     optionSuccessStatus: 200
 }
 app.use(cors(corsOptions));
-
-// SAML configuration
-const passport = require("passport");
-const saml = require("passport-saml");
-const fs = require('fs');
-
-const samlStrategy = new saml.Strategy(
-    {
-        callbackUrl: "/login-idp/callback",
-        entryPoint: "https://idptest.utdallas.edu/idp/shibboleth",
-        issuer: "http://csa-4485-02.utdallas.edu/",
-
-        decryptionPvk: fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
-        privateCert: fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
-        cert: fs.readFileSync("./saml_config/idp_key.pem", "utf8"),
-    },
-    function (profile, done) {
-        return done(null, profile);
-    }
-);
-
-passport.use("samlStrategy", samlStrategy);
 
 const team_routes = require('./routes/api/teams');
 const project_routes = require('./routes/api/projects');
@@ -50,22 +29,9 @@ app.use('/api/users', user_routes);
 app.use('api/teams/team_submit', team_submit_routes);
 app.use('/api/submit_all', submit_all_routes);
 
-app.get('/api/SSOLogin',
-    passport.authenticate('samlStrategy', { failureRedirect: '/', failureFlash: true }),
-    function (req, res) {
-        res.redirect('/');
-    }
-);
-
 app.route("/api/metadata").get(function (req, res) {
-    res.type("application/xml");
-    res.status(200);
-    res.send(
-        samlStrategy.generateServiceProviderMetadata(
-            fs.readFileSync("./saml_config/sp-cert.pem", "utf8"),
-            fs.readFileSync("./saml_config/sp-cert.pem", "utf8")
-        )
-    );
+    res.contentType('application/xml');
+    res.sendFile(path.join(__dirname, './saml_config/metadata.xml'));
 });
 
 // Connect Database

@@ -1,0 +1,40 @@
+<EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="csa-4485-02.utdallas.edu">
+  <SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol urn:oasis:names:tc:SAML:1.1:protocol">
+    <KeyDescriptor>
+      <ds:KeyInfo>
+        <ds:X509Data>
+          <ds:X509Certificate>
+MIIEGjCCAoKgAwIBAgIULIcuMr6QpQ0JoOoO6d9A36NmpXwwDQYJKoZIhvcNAQEL
+BQAwIzEhMB8GA1UEAxMYY3NhLTQ0ODUtMDEudXRkYWxsYXMuZWR1MB4XDTIzMDQy
+NjA2MjgxNloXDTMzMDQyMzA2MjgxNlowIzEhMB8GA1UEAxMYY3NhLTQ0ODUtMDEu
+dXRkYWxsYXMuZWR1MIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEA2tiL
+7ZjBCEaJiKCvPM4dWhE/dF+V6IcWcXvqc5Tlw9A4T6LwA1SfXEMhbeh0Qfco30NC
+brgdY/y9VG8s4ZbCDnOfOqCIOdTWoAxZeguFkBbnDaavEgvUIupE6Gs0/kWHkVDR
+rnPfUKpnQzrq4tIRQhNnCg3WEc+5lVBIZXkUTVMbxpoXinjtfBxwasROkTmShxdq
+Hu4ere/CkG/ya2To++0R/DQ+qVftXL33HJd29hmm97eIW7hF0+imYp4ttIiTMCeG
+UAyNhzZo3tHCiFR/tmnaqNlp6C9ie2be6mMCesytukfULN7b07/AYYKGlJF56pCq
+nJnXIIUKiDw1DjPgJXH0kO1qxA+Z3B+RtdfBi4jvgv5Dn8mjIuQVe5ZQhN8bPxY7
+UMMMjrUrQ9gjeKSdQpf3iWFbpVuunYIfKZ5QD6rsOJ8RF1eWvUUPfXF1tPZekBDx
+ARPDgEUyCq0bPmB+VoCq6LwmErzG3JEfFu2HXogRcj/daH3+ytptw00izHmfAgMB
+AAGjRjBEMCMGA1UdEQQcMBqCGGNzYS00NDg1LTAxLnV0ZGFsbGFzLmVkdTAdBgNV
+HQ4EFgQUSUpAkLjiFWVOPrTzVtV7+oJNEswwDQYJKoZIhvcNAQELBQADggGBAFxa
+TRKwAY49VrtZXNpI3OrKrzJU5kQ+Szp96Czcele4SMYWHUhPg9oe8UGXimxohwS/
+Q3V7bHFAHkagyZBTcFLRfRGzE2jyY/yjYFQZJ0zUISRMDoKklfJlN1kEhxPRiD2a
+6BSKI6hI8tEpJBsoomjirX4DtUj6AiJ3pmAqgTn8CwhRQDdwSgD6yDGkp8nj/oyS
+5cDGdkl7JMNIhVboe1D9BVEL7Rbi5HioSA1nJ1ZmAeZzZ0FI5JWjbVbDWSGt1ZeY
++uaU2FDrNAq2DnMbVIxMn1TYmOiNNIJaxLQeL+QfFWfuPTSzMZDiQLABxfjS8ztl
+YsdT1Owc1f8oxiuobuuYStRg93mRNdX8niQWeDhp7lkycrmrkFCsYSyEbmDPUFcO
+PB86EM3VDw0Azj/TByTY7vO8aP4oqBZ/ZNX59hZ792tupsBy4MUgdWeKkKltMs8y
+AsVuync70N0By//RhbEA9GhH0wjF7OQPVF5KKU6hnlD+c2A3iDGHDW12GFUBrQ==
+          </ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </KeyDescriptor>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://csa-4485-02.utdallas.edu/Shibboleth.sso/SAML2/POST" index=
+"1"/>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://csa-4485-02.utdallas.edu/Shibboleth.sso/SAML2/P
+OST-SimpleSign" index="2"/>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:PAOS" Location="https://csa-4485-02.utdallas.edu/Shibboleth.sso/SAML2/ECP" index="3"/>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:1.0:profiles:browser-post" Location="https://csa-4485-02.utdallas.edu/Shibboleth.sso/SAML/POST" index="4"/>
+  </SPSSODescriptor>
+</EntityDescriptor>
