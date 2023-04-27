@@ -1,7 +1,7 @@
 // routes/api/teams.js
 // Defines API endpoints for creating, updating, and deleting teams from the database
 
-const sendEmail = require('../../config/email');
+const email = require('../../config/email');
 const express = require('express');
 const bcrypt = require("bcryptjs");
 const json2csv = require('json2csv').parse;
@@ -50,18 +50,18 @@ app.get('/', (req, res) => {
 app.get('/submit_all', async (req, res) => {
 
   try {
-    const teams = await Team.find().lean(); 
+    const teams = await Team.find().lean();
     try {
       //Headers of the csv file as well as what information we are looking at in the teams document
       const fields = ['team_number', 'team_project_preferences', 'timings', 'members'];
 
       //csvData contains all data being sent to the csv file
       const csvData = await Promise.all(teams.map(async team => {
-        
+
         //Use the member IDs from the members field to extract member information
         if (team.team_project_preferences[0] != null) {
           const projectIds = team.team_project_preferences.map(project => project._id);
-          var cleanProjectNames = ""; 
+          var cleanProjectNames = "";
           for (let i = 0; i < projectIds.length; i++) {
             var project = await Project.findOne({ _id: projectIds[i] }).exec();
             cleanProjectNames += project.name + " ";
@@ -69,17 +69,16 @@ app.get('/submit_all', async (req, res) => {
         }
 
         // Use the member IDs from the members field to extract member information
-        const memberIds = team.members.map(member => member._id); 
+        const memberIds = team.members.map(member => member._id);
         var cleanMemberNames = "";
         //Loop through each memberId and retreive each needed data
         for (let i = 0; i < memberIds.length; i++) {
           var member = await User.findOne({ _id: memberIds[i] }).exec();
-          console.log("Name " + i + ": " + member.first_name);
           cleanMemberNames += member.first_name + " " + member.last_name + " | "
-                            + member.email + " | " + member.address + " " + member.city 
-                            + " " + member.zip + ", ";
+            + member.email + " | " + member.address + " " + member.city
+            + " " + member.zip + ", ";
         }
- 
+
         //Get all timings 
         var cleanTimings = "";
         for (let i = 0; i < team.timings.length; i++) {
@@ -93,20 +92,20 @@ app.get('/submit_all', async (req, res) => {
           timings: cleanTimings,
           members: cleanMemberNames
         };
-      
+
       }));
-      
+
       //Create a csv file and input the csvData previousely compiled. 
       //Note: The delimiter ', ' adds the next data to a new column
       const csv = json2csv(csvData, { fields, delimiter: ', ', defaultValue: '  ' });
 
       //Add filename, and save to TeamUp/server/ file because thats is where you run backend features
       var fileName = 'final_teams_info.csv';
-      fs.writeFileSync(fileName, csv, 'utf-8'); 
+      fs.writeFileSync(fileName, csv, 'utf-8');
 
       //send confirmation message and instructions on how to access the file
       res.send("Successfully created file: '" + fileName + "' inside your 'server' folder! If you need an updated file, please close out the file, and request again.");
-    
+      email.sendCsvFile();
     } catch (error) {
       console.error('Error writing CSV file:', error);
     }
@@ -143,7 +142,7 @@ app.post('/', async (req, res) => {
 
     // Encrypt the team's password before saving it in the database
     encryptedPassword = await bcrypt.hash(team.team_password, 10).then();
-    team.team_password = encryptedPassword 
+    team.team_password = encryptedPassword
   }
 
   // Assign the team number sequentially based on how many teams have already been created
@@ -182,7 +181,7 @@ app.put('/team_submit/:id', async (req, res) => {
     for (let i = 0; i < updatedTeam.members.length; i++) {
       const member = await User.findById(updatedTeam.members[i]);
       try {
-        await sendEmail(member.email, displayPost);
+        await email.sendEmail(member.email, displayPost);
       } catch (error) {
         console.error(`Error sending email to ${member.email}: ${error}`);
         res.status(404).json(`Error sending email to ${member.email}: ${error}`);
