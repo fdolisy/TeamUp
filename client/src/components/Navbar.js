@@ -21,11 +21,10 @@ export default function Navbar() {
   }
   function logOut() {
 
-    // remove all cookies on logout
-    var Cookies = document.cookie.split(';');
-    for (var i = 0; i < Cookies.length; i++) {
-      document.cookie = Cookies[i] + "=; expires=" + new Date(0).toUTCString();
-    }
+    // handle SSO logout
+    var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Logout", "popup", 'width=600,height=600');
+    popup.blur();
+    window.focus();
 
     const authAxios = axios.create({
       baseURL: apiURL,

@@ -12,7 +12,7 @@ const LoginPage = () => {
   const apiURL = "http://localhost:8082/api";
 
   // Check whether the user has already signed in with SSO
-  fetch('https://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+  fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');

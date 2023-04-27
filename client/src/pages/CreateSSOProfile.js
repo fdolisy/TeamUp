@@ -44,7 +44,7 @@ export default function CreateProfile() {
 
   // Check whether the user has already signed in with SSO
   if (attributes[0] === '') {
-    fetch('https://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+    fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
       .then(response => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
