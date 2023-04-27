@@ -44,6 +44,77 @@ app.get('/', (req, res) => {
   }
 });
 
+// @route GET api/submit_all
+// @description Compile submitted teams to send to a flat file (Compatible with UTD's current process of data collection)
+// @access Public
+app.get('/submit_all', async (req, res) => {
+
+  try {
+    const teams = await Team.find().lean(); 
+    try {
+      //Headers of the csv file as well as what information we are looking at in the teams document
+      const fields = ['team_number', 'team_project_preferences', 'timings', 'members'];
+
+      //csvData contains all data being sent to the csv file
+      const csvData = await Promise.all(teams.map(async team => {
+        
+        //Use the member IDs from the members field to extract member information
+        if (team.team_project_preferences[0] != null) {
+          const projectIds = team.team_project_preferences.map(project => project._id);
+          var cleanProjectNames = ""; 
+          for (let i = 0; i < projectIds.length; i++) {
+            var project = await Project.findOne({ _id: projectIds[i] }).exec();
+            cleanProjectNames += project.name + " ";
+          }
+        }
+
+        // Use the member IDs from the members field to extract member information
+        const memberIds = team.members.map(member => member._id); 
+        var cleanMemberNames = "";
+        //Loop through each memberId and retreive each needed data
+        for (let i = 0; i < memberIds.length; i++) {
+          var member = await User.findOne({ _id: memberIds[i] }).exec();
+          console.log("Name " + i + ": " + member.first_name);
+          cleanMemberNames += member.first_name + " " + member.last_name + " | "
+                            + member.email + " | " + member.address + " " + member.city 
+                            + " " + member.zip + ", ";
+        }
+ 
+        //Get all timings 
+        var cleanTimings = "";
+        for (let i = 0; i < team.timings.length; i++) {
+          cleanTimings += team.timings[i] + " | ";
+        }
+
+        //Return all needed strings to be added into csvData
+        return {
+          team_number: team.team_number,
+          team_project_preferences: cleanProjectNames,
+          timings: cleanTimings,
+          members: cleanMemberNames
+        };
+      
+      }));
+      
+      //Create a csv file and input the csvData previousely compiled. 
+      //Note: The delimiter ', ' adds the next data to a new column
+      const csv = json2csv(csvData, { fields, delimiter: ', ', defaultValue: '  ' });
+
+      //Add filename, and save to TeamUp/server/ file because thats is where you run backend features
+      var fileName = 'final_teams_info.csv';
+      fs.writeFileSync(fileName, csv, 'utf-8'); 
+
+      //send confirmation message and instructions on how to access the file
+      res.send("Successfully created file: '" + fileName + "' inside your 'server' folder! If you need an updated file, please close out the file, and request again.");
+    
+    } catch (error) {
+      console.error('Error writing CSV file:', error);
+    }
+  } catch {
+    res.status(404).json(error).send("Error getting teams.");
+  }
+});
+
 // @route GET api/teams/:id
 // @description Get single team by id
 // @access Public
@@ -72,7 +143,7 @@ app.post('/', async (req, res) => {
 
     // Encrypt the team's password before saving it in the database
     encryptedPassword = await bcrypt.hash(team.team_password, 10).then();
-    team.team_password = encryptedPassword
+    team.team_password = encryptedPassword 
   }
 
   // Assign the team number sequentially based on how many teams have already been created
@@ -86,7 +157,7 @@ app.post('/', async (req, res) => {
     .catch(err => res.status(400).json({ error: err }));
 });
 
-// @route POST api/teams/team_submit
+// @route POST api/team_submit
 // @description Team submission 
 // @access Public
 // @param [String] timings
@@ -180,7 +251,7 @@ app.delete('/:id', (req, res) => {
 
 // @route PUT api/teams/join/:id
 // @description Allows an authenticated user to join a public/private team
-// @access Private
+// @access Private 
 // @param ObjectId user_id
 // @param String password
 app.put('/join/:id', auth, async (req, res) => {
