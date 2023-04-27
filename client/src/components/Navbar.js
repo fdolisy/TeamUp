@@ -3,6 +3,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
 import GroupsIcon from "@mui/icons-material/Groups";
 import IconButton from "@mui/material/IconButton";
+import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useContext } from "react";
@@ -19,6 +20,11 @@ export default function Navbar() {
   function profile() {
     navigate("/dashboard");
   }
+
+  function team() {
+    navigate("/team");
+  }
+
   function logOut() {
     const authAxios = axios.create({
       baseURL: apiURL,
@@ -58,6 +64,15 @@ export default function Navbar() {
               onClick={profile}
             />
           </IconButton>
+
+          <IconButton aria-label="web-access">
+            <AutoAwesomeMosaicIcon
+              className="text-offWhite"
+              fontSize="large"
+              onClick={team}
+            />
+          </IconButton>
+
           <IconButton aria-label="settings">
             <LogoutIcon
               className="text-offWhite"

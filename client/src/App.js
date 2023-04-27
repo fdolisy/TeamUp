@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import JoinExistingTeam from "./pages/JoinExistingTeam";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProfileDashboard from "./pages/ProfileDashboard";
+import TeamDashBoard from "./pages/TeamDashboard";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserContext, initialUserData, reducer } from "./components/User";
@@ -28,6 +29,9 @@ function App() {
         <Route path="/join" element={<JoinExistingTeam />} />
         <Route path="/details" element={<ProjectDetails />} />
         <Route path="/dashboard" element={<ProfileDashboard />} />
+
+        <Route path="/team" element={<TeamDashBoard />} />
+
         <Route path="/" element={<LoginPage />} />
       </Routes>
     </UserContext.Provider>

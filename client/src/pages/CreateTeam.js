@@ -45,8 +45,6 @@ const CreateTeam = () => {
       selectedProject8,
       selectedProject9
     );
-    console.log(preferences);
-    console.log(password);
 
     axios
       .post("http://localhost:8082/api/teams", {
@@ -103,6 +101,7 @@ const CreateTeam = () => {
 
   var selectedProject9 = null;
   const handleProject9 = (e) => {
+    console.log(e.value);
     selectedProject9 = e.value;
   };
 

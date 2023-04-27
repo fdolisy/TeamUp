@@ -16,22 +16,24 @@ export default function Starting() {
     },
   });
 
-  authAxios
-    .get(`${apiURL}/users/${user.id}`)
-    .then((response) => {
-      setUser({
-        ...user,
-        first_name: response.data.first_name,
-        last_name: response.data.last_name,
-        email: response.data.email,
-        project_pref: response.data.project_pref,
-        skills: response.data.skills,
-        team_id: response.data.team_id,
+  useEffect(() => {
+    authAxios
+      .get(`${apiURL}/users/${user.id}`)
+      .then((response) => {
+        setUser({
+          ...user,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          email: response.data.email,
+          project_pref: response.data.project_pref,
+          skills: response.data.skills,
+          team_id: response.data.team_id,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  }, []);
 
   function createTeam() {
     navigate("/create");
