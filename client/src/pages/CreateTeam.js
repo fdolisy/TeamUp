@@ -1,10 +1,12 @@
-import React, { useCallback } from "react";
+import React from "react";
 // import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import UserContext from "../components/User";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const project_names = [];
 const objs = [];
@@ -46,7 +48,7 @@ const CreateTeam = () => {
       selectedProject8,
       selectedProject9
     );
-    // console.log(preferences);
+    console.log(preferences);
     // console.log(password);
 
     axios
@@ -58,51 +60,57 @@ const CreateTeam = () => {
       })
       .then((response) => {
         console.log(response.data);
+        toast.success("Team created successfully!");
       })
       .catch((error) => {
+        toast.error("Please try again!");
         console.log(error);
       });
   }
+  const handleProjectName = (index) => {
+    if (user.user.project_details[index] === null) return "Select...";
+    else return user.user.project_details[index].name;
+  };
 
   // projects
 
-  var selectedProject1 = null;
+  var selectedProject1 = handleProjectName(0);
   const handleProject1 = (e) => {
     selectedProject1 = e.value;
   };
 
-  var selectedProject2 = null;
+  var selectedProject2 = handleProjectName(1);
   const handleProject2 = (e) => {
     selectedProject2 = e.value;
   };
 
-  var selectedProject3 = null;
+  var selectedProject3 = handleProjectName(2);
   const handleProject3 = (e) => {
     selectedProject3 = e.value;
   };
-  var selectedProject4 = null;
+  var selectedProject4 = handleProjectName(3);
   const handleProject4 = (e) => {
     selectedProject4 = e.value;
   };
-  var selectedProject5 = null;
+  var selectedProject5 = handleProjectName(4);
   const handleProject5 = (e) => {
     selectedProject5 = e.value;
   };
-  var selectedProject6 = null;
+  var selectedProject6 = handleProjectName(5);
   const handleProject6 = (e) => {
     selectedProject6 = e.value;
   };
-  var selectedProject7 = null;
+  var selectedProject7 = handleProjectName(6);
   const handleProject7 = (e) => {
     selectedProject7 = e.value;
   };
 
-  var selectedProject8 = null;
+  var selectedProject8 = handleProjectName(7);
   const handleProject8 = (e) => {
     selectedProject8 = e.value;
   };
 
-  var selectedProject9 = null;
+  var selectedProject9 = handleProjectName(8);
   const handleProject9 = (e) => {
     selectedProject9 = e.value;
   };
@@ -112,10 +120,6 @@ const CreateTeam = () => {
     password = e.target.value;
   };
 
-  const handleProjectName = (index) => {
-    if (user.user.project_details[index] === null) return "Select...";
-    else return user.user.project_details[index].name;
-  };
   useEffect(() => {
     axios
       .get(`${apiURL}/teams`)
@@ -131,6 +135,7 @@ const CreateTeam = () => {
     <div className="bg-offWhite">
       <Navbar />
 
+      <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
       <div className="flex flex-col">
         <div className="basis-5/6 px-4">
           <h1 className="text-4xl text-center font-bold text-orange py-4">

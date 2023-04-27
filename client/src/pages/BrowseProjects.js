@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function BrowseProjects() {
   const [projects, setProjects] = useState([]);
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   let navigate = useNavigate();
 
   const handleSearch = (event) => {
