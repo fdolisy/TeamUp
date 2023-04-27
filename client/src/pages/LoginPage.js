@@ -10,6 +10,22 @@ const LoginPage = () => {
   const [showAlert, setShowAlert] = useState(false);
   const apiURL = "http://localhost:8082/api";
 
+  // Check whether the user has already signed in with SSO
+  fetch('https://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(data => {
+      // TODO: parse out name and email from here
+      console.log(data);
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+
   function HandleSubmit() {
     axios
       .post(`${apiURL}/login`, {
@@ -24,6 +40,22 @@ const LoginPage = () => {
           logged_in: true,
         });
         navigate("/status");
+      })
+      .catch((error) => {
+        console.log(error);
+        setShowAlert(true);
+      });
+  }
+
+  function HandleSSO() {
+    axios
+      .get(`${apiURL}/sso`)
+      .then((response) => {
+        console.log('here')
+        if (response.request.responseURL) {
+          window.location.href = response.request.responseURL;
+        }
+        console.log(response)
       })
       .catch((error) => {
         console.log(error);
@@ -68,6 +100,13 @@ const LoginPage = () => {
               )}
 
               <div className="flex flex-col space-y-4 py-2">
+                <button
+                  className={"obtn text-2xl py-3 px-4 "}
+                  onClick={HandleSSO}
+                >
+                  Login with UTD SSO
+                </button>
+                <br />
                 <div>
                   <label htmlFor="email">Email</label>
                   <input
