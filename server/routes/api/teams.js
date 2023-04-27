@@ -39,7 +39,20 @@ app.get('/', (req, res) => {
   // Otherwise, return all teams
   else {
     Team.find()
-      .then(teams => res.json(teams))
+      .then(async teams => {
+        var teams_details = await Promise.all(teams.map(async (team) => {
+          var user_ids = team.members;
+
+          var user_details = await Promise.all(user_ids.map(async (id) => {
+            var user = await User.findById(id);
+            return user;
+          }))
+          team = team.toJSON()
+          team.member_details = user_details;
+          return team;
+        }))
+        res.json(teams_details)
+      })
       .catch(err => res.status(404).json({ noteamsfound: err }));
   }
 });
