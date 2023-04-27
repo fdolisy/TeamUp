@@ -70,8 +70,44 @@ const LoginPage = () => {
       });
   }
 
-  function HandleSSO() {
-    window.location.href = "https://csa-4485-02.utdallas.edu/Shibboleth.sso/Login"
+  async function HandleSSO() {
+    // Check whether the user has already signed in with SSO
+    fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(data => {
+        if (data.includes('mail')) {
+          const attributes = parse_attributes(data)
+
+          // try to login this user
+          axios
+            .post(`${apiURL}/login`, {
+              email: attributes[2],
+              password: "SSO",
+            })
+            .then((response) => {
+              console.log('2')
+              setUser({
+                ...user,
+                token: response.data.token,
+                id: response.data.userID,
+                logged_in: true,
+              });
+              navigate("/status");
+            })
+            .catch((error) => {
+              console.log('1')
+              var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Login", "popup", 'width=600,height=600');
+            });
+        }
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   }
 
   function HandleSignUp() {
