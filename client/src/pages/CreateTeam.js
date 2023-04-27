@@ -6,6 +6,7 @@ import Select from "react-select";
 import axios from "axios";
 import UserContext from "../components/User";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 const project_names = [];
@@ -33,9 +34,13 @@ axios
   });
 
 const CreateTeam = () => {
-  const user = useContext(UserContext);
+  const { setUser, user } = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
   const [teamNumber, setTeamNum] = useState(0);
+  // console.log(selectedProject1 + " " + selectedProject9);
+  let navigate = useNavigate();
+  console.log(user);
+
   function handleSubmit() {
     const preferences = new Array(
       selectedProject1,
@@ -50,67 +55,75 @@ const CreateTeam = () => {
     );
     console.log(preferences);
     // console.log(password);
-
+    console.log(user.user);
+    console.log(user.id);
+    console.log(user.user === null);
+    var id = user.user === null ? user.user.id : user.id;
     axios
       .post(`${apiURL}/teams`, {
-        members: user.id,
+        members: id,
         is_public: isPublic,
         team_project_preferences: preferences,
         team_password: password,
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
+        // var data = response.data;
+        console.log(response.data.msg.split(" ")[1]);
+        setUser({
+          ...user,
+          team_id: response.data.msg,
+        });
         toast.success("Team created successfully!");
+        setTimeout(() => {
+          navigate("/status");
+        }, 2000);
       })
       .catch((error) => {
         toast.error("Please try again!");
         console.log(error);
       });
   }
-  const handleProjectName = (index) => {
-    if (user.user.project_details[index] === null) return "Select...";
-    else return user.user.project_details[index].name;
-  };
 
   // projects
 
-  var selectedProject1 = handleProjectName(0);
+  var selectedProject1 = null;
   const handleProject1 = (e) => {
     selectedProject1 = e.value;
   };
 
-  var selectedProject2 = handleProjectName(1);
+  var selectedProject2 = null;
   const handleProject2 = (e) => {
     selectedProject2 = e.value;
   };
 
-  var selectedProject3 = handleProjectName(2);
+  var selectedProject3 = null;
   const handleProject3 = (e) => {
     selectedProject3 = e.value;
   };
-  var selectedProject4 = handleProjectName(3);
+  var selectedProject4 = null;
   const handleProject4 = (e) => {
     selectedProject4 = e.value;
   };
-  var selectedProject5 = handleProjectName(4);
+  var selectedProject5 = null;
   const handleProject5 = (e) => {
     selectedProject5 = e.value;
   };
-  var selectedProject6 = handleProjectName(5);
+  var selectedProject6 = null;
   const handleProject6 = (e) => {
     selectedProject6 = e.value;
   };
-  var selectedProject7 = handleProjectName(6);
+  var selectedProject7 = null;
   const handleProject7 = (e) => {
     selectedProject7 = e.value;
   };
 
-  var selectedProject8 = handleProjectName(7);
+  var selectedProject8 = null;
   const handleProject8 = (e) => {
     selectedProject8 = e.value;
   };
 
-  var selectedProject9 = handleProjectName(8);
+  var selectedProject9 = null;
   const handleProject9 = (e) => {
     selectedProject9 = e.value;
   };
@@ -120,6 +133,10 @@ const CreateTeam = () => {
     password = e.target.value;
   };
 
+  // const handleProjectName = (index) => {
+  //   if (user.user.project_details[index] === null) return "Select...";
+  //   else return user.user.project_details[index].name;
+  // };
   useEffect(() => {
     axios
       .get(`${apiURL}/teams`)
@@ -224,10 +241,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject1}
-                    defaultValue={{
-                      label: handleProjectName(0),
-                      value: handleProjectName(0),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(0),
+                    // //   value: handleProjectName(0),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -238,10 +255,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject2}
-                    defaultValue={{
-                      label: handleProjectName(1),
-                      value: handleProjectName(1),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(1),
+                    // //   value: handleProjectName(1),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -253,10 +270,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject3}
-                    defaultValue={{
-                      label: handleProjectName(2),
-                      value: handleProjectName(2),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(2),
+                    // //   value: handleProjectName(2),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -270,10 +287,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject4}
-                    defaultValue={{
-                      label: handleProjectName(3),
-                      value: handleProjectName(3),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(3),
+                    // //   value: handleProjectName(3),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -284,10 +301,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject5}
-                    defaultValue={{
-                      label: handleProjectName(4),
-                      value: handleProjectName(4),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(4),
+                    // //   value: handleProjectName(4),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -299,10 +316,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject6}
-                    defaultValue={{
-                      label: handleProjectName(5),
-                      value: handleProjectName(5),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(5),
+                    // //   value: handleProjectName(5),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -316,10 +333,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject7}
-                    defaultValue={{
-                      label: handleProjectName(6),
-                      value: handleProjectName(6),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(6),
+                    // //   value: handleProjectName(6),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -330,10 +347,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject8}
-                    defaultValue={{
-                      label: handleProjectName(7),
-                      value: handleProjectName(7),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(7),
+                    // //   value: handleProjectName(7),
+                    // }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -345,10 +362,11 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject9}
-                    defaultValue={{
-                      label: handleProjectName(8),
-                      value: handleProjectName(8),
-                    }}
+                    // // defaultValue={{
+                    // //   label: handleProjectName(8),
+                    // //   value: handleProjectName(8),
+                    // }}
+                    // value={{ selectedProject9 }}
                     className=" py-2 w-full"
                   />
                 </form>

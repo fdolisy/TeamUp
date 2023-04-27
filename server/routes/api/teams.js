@@ -38,7 +38,24 @@ app.get("/", (req, res) => {
   // Otherwise, return all teams
   else {
     Team.find()
-      .then((teams) => res.json(teams))
+      .then(async (teams) => {
+        var teams_details = await Promise.all(
+          teams.map(async (team) => {
+            var user_ids = team.members;
+
+            var user_details = await Promise.all(
+              user_ids.map(async (id) => {
+                var user = await User.findById(id);
+                return user;
+              })
+            );
+            team = team.toJSON();
+            team.member_details = user_details;
+            return team;
+          })
+        );
+        res.json(teams_details);
+      })
       .catch((err) => res.status(404).json({ noteamsfound: err }));
   }
 });
@@ -181,9 +198,7 @@ app.post("/", async (req, res) => {
   team.is_finalized = false;
 
   Team.create(team)
-    .then((team) =>
-      res.json({ msg: "Team " + team.id + " added successfully" })
-    )
+    .then((team) => res.json({ msg: team.id }))
     .catch((err) => res.status(400).json({ error: err }));
 });
 
@@ -318,12 +333,9 @@ app.put("/join/:id", auth, async (req, res) => {
 
   // do not allow anyone to join a finalized team
   if (team.is_finalized) {
-    res
-      .status(400)
-      .json({
-        error:
-          "Team " + team.id + " is already finalized and cannot be modified",
-      });
+    res.status(400).json({
+      error: "Team " + team.id + " is already finalized and cannot be modified",
+    });
     return;
   }
 
@@ -332,14 +344,12 @@ app.put("/join/:id", auth, async (req, res) => {
     req_password = req.body.team_password;
 
     if (!req_password) {
-      res
-        .status(400)
-        .json({
-          error:
-            "Team " +
-            team.id +
-            " is private. Please include a team_password in your request",
-        });
+      res.status(400).json({
+        error:
+          "Team " +
+          team.id +
+          " is private. Please include a team_password in your request",
+      });
       return;
     }
 
@@ -365,14 +375,12 @@ app.put("/join/:id", auth, async (req, res) => {
 
     // if the user is on a finalized team already, do not allow them to join a new team
     if (old_team.is_finalized) {
-      res
-        .status(400)
-        .json({
-          mgs:
-            "User " +
-            user.id +
-            " is already on a finalized team and cannot join a new one",
-        });
+      res.status(400).json({
+        mgs:
+          "User " +
+          user.id +
+          " is already on a finalized team and cannot join a new one",
+      });
       return;
     }
 

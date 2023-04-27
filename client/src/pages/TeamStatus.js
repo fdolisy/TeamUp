@@ -15,7 +15,8 @@ export default function Starting() {
       "x-access-token": user.token,
     },
   });
-
+  console.log(user);
+  console.log(user.team_id);
   useEffect(() => {
     authAxios
       .get(`${apiURL}/users/${user.id}`)
@@ -28,7 +29,7 @@ export default function Starting() {
           project_preferences: response.data.project_preferences,
           project_details: response.data.project_details,
           skills: response.data.skills,
-          team_id: response.data.team_id,
+          // team_id: response.data.team_id,
           address: response.data.address,
           city: response.data.city,
           zip: response.data.zip,

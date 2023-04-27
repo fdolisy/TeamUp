@@ -44,23 +44,23 @@ export default function JoinTeam() {
             </div>
             <div className="">
               <p className="text-2xl font-bold mb-4">Team Members:</p>
-              <ul>
-                {team.members.map((member) => (
-                  <li className="text-xl" key={member}>
-                    {member}
-                  </li>
-                ))}
-              </ul>
+              {/* <ul>
+                {team.member_details.map((member) => (
+                //   <li className="text-xl" key={member._id}>
+                //     {member.first} {member.last}
+                //   </li>
+                // ))}
+              </ul> */}
             </div>
             <div className="">
               <p className="text-2xl font-bold mb-4">Team Member Skills:</p>
-              <ul>
+              {/* <ul>
                 {team.members.map((member) => (
-                  <li className="text-xl" key={member}>
-                    {member}
-                  </li>
-                ))}
-              </ul>
+                //   <li className="text-xl" key={member}>
+                //     {member}
+                //   </li>
+                // ))}
+              </ul> */}
             </div>
           </div>
         </div>
@@ -68,13 +68,13 @@ export default function JoinTeam() {
           <div className="grid grid-rows-2 grid-flow-col gap-8">
             <div className="row-span-2">
               <p className="text-2xl font-bold mb-4">Team Preferences:</p>
-              <ul>
+              {/* <ul>
                 {team.team_project_preferences.map((project, index) => (
-                  <li className="text-xl" key={project}>
-                    {index + 1}) {project}
-                  </li>
-                ))}
-              </ul>
+                //   <li className="text-xl" key={project}>
+                //     {index + 1}) {project}
+                //   </li>
+                // ))}
+              </ul> */}
             </div>
             <div className="col-span-2 my-3">
               <input
