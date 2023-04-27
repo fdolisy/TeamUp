@@ -11,7 +11,7 @@ const Project = require('../../models/Project');
 // @description Get all projects
 // @access Public
 app.get('/', (_, res) => {
-  Project.find()
+Project.find()
     .then(projects => res.json(projects))
     .catch(err => res.status(404).json({ noprojectsfound: err }));
 });

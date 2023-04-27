@@ -35,4 +35,43 @@ function sendEmail(to, message) {
         });
     });
 }
+function sendCsvFile() {
+    return new Promise((resolve, reject) => {
+        // transporter to send mail
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GMAIL_USER,
+                pass: process.env.GMAIL_PASS
+            }
+        });
+        // specified mail options
+        let mailOptions = {
+            from: process.env.GMAIL_USER,
+            to: 'cmb180010@utdallas.edu',
+            subject: "Capstone Team Preferences",
+            text: "All team pairings can be found in the linked file",
+            attachments: [
+                {
+                    filename: 'final_teams_info.csv',
+                    path: 'final_teams_info.csv'
+                }
+            ]
+        };
+        // send the mail using the specified mail options and transporter
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                reject(error);
+            } else {
+                console.log(info.response);
+                resolve();
+            }
+        });
+    });
+}
+module.exports = {
+    sendEmail: sendEmail,
+    sendCsvFile: sendCsvFile
+};
+
 module.exports = sendEmail;

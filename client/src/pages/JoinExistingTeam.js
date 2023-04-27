@@ -8,7 +8,7 @@ const JoinExistingTeam = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8082/api/teams")
+      .get("api/teams")
       .then((response) => {
         // const project_objects = new Array(response.data);
         setTeams(response.data);

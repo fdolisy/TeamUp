@@ -8,7 +8,7 @@ export default function Starting() {
   let navigate = useNavigate();
   const { setUser, user } = useContext(UserContext);
 
-  const apiURL = "http://localhost:8082/api";
+  const apiURL = "http://csa-4485-02.utdallas.edu/api/";
   const authAxios = axios.create({
     baseURL: apiURL,
     headers: {
@@ -16,22 +16,29 @@ export default function Starting() {
     },
   });
 
-  authAxios
-    .get(`${apiURL}/users/${user.id}`)
-    .then((response) => {
-      setUser({
-        ...user,
-        first_name: response.data.first_name,
-        last_name: response.data.last_name,
-        email: response.data.email,
-        project_pref: response.data.project_pref,
-        skills: response.data.skills,
-        team_id: response.data.team_id,
+  useEffect(() => {
+    authAxios
+      .get(`${apiURL}/users/${user.id}`)
+      .then((response) => {
+        setUser({
+          ...user,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          email: response.data.email,
+          project_preferences: response.data.project_preferences,
+          project_details: response.data.project_details,
+          skills: response.data.skills,
+          team_id: response.data.team_id,
+          address: response.data.address,
+          city: response.data.city,
+          zip: response.data.zip,
+          extra_information: response.data.extra_information,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  }, []);
 
   function createTeam() {
     navigate("/create");

@@ -11,7 +11,7 @@ import UserContext from "../components/User";
 export default function Navbar() {
   let navigate = useNavigate();
   const { setUser, user } = useContext(UserContext);
-  const apiURL = "http://localhost:8082/api";
+  const apiURL = "http://csa-4485-02.utdallas.edu/api/";
 
   function handleClick() {
     navigate("/status");
@@ -20,6 +20,11 @@ export default function Navbar() {
     navigate("/dashboard");
   }
   function logOut() {
+
+	  var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Logout", "popup", 'width=600,height=600');
+	popup.blur();
+	  window.focus();
+
     const authAxios = axios.create({
       baseURL: apiURL,
       headers: {

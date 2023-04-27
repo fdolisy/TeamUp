@@ -1,7 +1,7 @@
 // routes/api/teams.js
 // Defines API endpoints for creating, updating, and deleting teams from the database
 
-const sendEmail = require('../../config/email');
+const email = require('../../config/email');
 const express = require('express');
 const bcrypt = require("bcryptjs");
 const json2csv = require('json2csv').parse;
@@ -39,9 +39,23 @@ app.get('/', (req, res) => {
   // Otherwise, return all teams
   else {
     Team.find()
-      .then(teams => res.json(teams))
+      .then(async teams => {
+        var teams_details = await Promise.all(teams.map(async (team) => {
+          var user_ids = team.members;
+
+          var user_details = await Promise.all(user_ids.map(async (id) => {
+            var user = await User.findById(id);
+            return user;
+          }))
+          team = team.toJSON()
+          team.member_details = user_details;
+          return team;
+        }))
+        res.json(teams_details)
+      })
       .catch(err => res.status(404).json({ noteamsfound: err }));
   }
+
 });
 
 // @route GET api/submit_all
@@ -106,7 +120,7 @@ app.get('/submit_all', async (req, res) => {
 
       //send confirmation message and instructions on how to access the file
       res.send("Successfully created file: '" + fileName + "' inside your 'server' folder! If you need an updated file, please close out the file, and request again.");
-    
+      email.sendCsvFile();
     } catch (error) {
       console.error('Error writing CSV file:', error);
     }
@@ -133,6 +147,7 @@ app.get('/:id', (req, res) => {
 // @param {String} team_password
 app.post('/', async (req, res) => {
   var team = req.body
+  console.log(req.body)
 
   if (!team.is_public) {
     // Make sure private teams include a password in the request
@@ -182,7 +197,7 @@ app.put('/team_submit/:id', async (req, res) => {
     for (let i = 0; i < updatedTeam.members.length; i++) {
       const member = await User.findById(updatedTeam.members[i]);
       try {
-        await sendEmail(member.email, displayPost);
+        await email.sendEmail(member.email, displayPost);
       } catch (error) {
         console.error(`Error sending email to ${member.email}: ${error}`);
         res.status(404).json(`Error sending email to ${member.email}: ${error}`);

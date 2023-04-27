@@ -14,7 +14,7 @@ export default function BrowseProjects() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8082/api/projects/")
+      .get("/api/projects/")
       .then((response) => {
         // const project_objects = new Array(response.data);
         setProjects(response.data);

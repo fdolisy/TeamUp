@@ -4,11 +4,13 @@ import { useReducer } from "react";
 import TeamStatus from "./pages/TeamStatus";
 import BrowseProjects from "./pages/BrowseProjects";
 import CreateProfile from "./pages/CreateProfile";
+import CreateSSOProfile from "./pages/CreateSSOProfile";
 import CreateTeam from "./pages/CreateTeam";
 import LoginPage from "./pages/LoginPage";
 import JoinExistingTeam from "./pages/JoinExistingTeam";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProfileDashboard from "./pages/ProfileDashboard";
+import JoinTeam from "./pages/JoinTeam";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserContext, initialUserData, reducer } from "./components/User";
@@ -24,8 +26,10 @@ function App() {
         <Route path="/status" element={<TeamStatus />} />
         <Route path="/create" element={<CreateTeam />} />
         <Route path="/profile" element={<CreateProfile />} />
+	<Route path="/ssoprofile" element={<CreateSSOProfile />} />
         <Route path="/browse" element={<BrowseProjects />} />
         <Route path="/join" element={<JoinExistingTeam />} />
+        <Route path="/joinTeam" element={<JoinTeam />} />
         <Route path="/details" element={<ProjectDetails />} />
         <Route path="/dashboard" element={<ProfileDashboard />} />
         <Route path="/" element={<LoginPage />} />

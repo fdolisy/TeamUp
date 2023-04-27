@@ -3,11 +3,23 @@
 require('dotenv').config({ path: './config.env' });
 const express = require('express');
 
+const http = require('http');
+const https = require('https');
+
 var path = require('path');
 const connectDB = require('./config/db');
 
 const app = express();
 
+// route https to http
+/*
+app.use((req, res, next) => {
+  if (req.secure) {
+    return res.redirect('http://' + req.headers.host + req.url);
+  }
+  next();
+});
+*/
 
 const cors = require('cors');
 const corsOptions = {
@@ -17,11 +29,18 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
+
+/*
 app.use((req, res, next) => {
-  // Set the Access-Control-Allow-Origin header to allow all origins
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  console.log('cady')
+  if (req.secure) {
+	  console.log('cady 2')
+    return res.redirect('http://localhost:2222' + req.url);
+  }
   next();
 });
+*/
+
 
 const team_routes = require('./routes/api/teams');
 const project_routes = require('./routes/api/projects');
@@ -70,14 +89,28 @@ app.use('/api/sso', passport.authenticate('saml', { successRedirect: '/', failur
 app.use('/api/login', login_route);
 app.use('/api/users', user_routes);
 
-app.route("/api/metadata").get(function (req, res) {
-    res.contentType('application/xml');
-    res.sendFile(path.join(__dirname, '/saml_config/metadata.xml'));
-});
-
 // Connect Database
 connectDB();
 const port = process.env.PORT || 1111;
-
 app.listen(port, () => console.log(`Server running on port ${port}`));
 
+/*
+var httpServer = http.createServer(app);
+httpServer.listen(port, () => console.log(`Server running on port ${port}`));
+
+
+
+// Code to handle https calls
+var key = fs.readFileSync(__dirname + '/selfsigned.key');
+var cert = fs.readFileSync(__dirname + '/selfsigned.crt');
+var options = {
+  key: key,
+  cert: cert
+};
+
+var httpsServer = https.createServer(options, app);
+
+httpsServer.listen(1111, () => {
+  console.log("server starting on port : " + port)
+});
+*/
