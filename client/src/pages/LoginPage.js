@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useContext } from "react";
 import UserContext from "../components/User";
+import { parse_attributes } from '../sso_helper.js'
 
 const LoginPage = () => {
   let navigate = useNavigate();
@@ -19,8 +20,46 @@ const LoginPage = () => {
       return response.text();
     })
     .then(data => {
-      // TODO: parse out name and email from here
-      console.log(data);
+
+      data = `<html><head><title>Session Summary</title></head><body><pre>
+    <u>Miscellaneous</u>
+    <strong>Session Expiration (barring inactivity):</strong> 480 minute(s)
+    <strong>Client Address:</strong> 10.50.123.254
+    <strong>SSO Protocol:</strong> urn:oasis:names:tc:SAML:2.0:protocol
+    <strong>Identity Provider:</strong> https://idptest.utdallas.edu/idp/shibboleth
+    <strong>Authentication Time:</strong> 2023-04-27T03:21:57.784Z
+    <strong>Authentication Context Class:</strong> urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+    <strong>Authentication Context Decl:</strong> (none)
+    
+    <u>Attributes</u>
+    <strong>cn</strong>: Cady Baltz
+    <strong>givenName</strong>: Cady
+    <strong>mail</strong>: cmb180010@utdallas.edu
+    <strong>sn</strong>: Baltz</pre></body></html>`
+
+      if (data.includes('mail')) {
+        const attributes = parse_attributes(data)
+
+        // try to login this user
+        axios
+          .post(`${apiURL}/login`, {
+            email: attributes[2],
+            password: "SSO",
+          })
+          .then((response) => {
+            setUser({
+              ...user,
+              token: response.data.token,
+              id: response.data.userID,
+              logged_in: true,
+            });
+            navigate("/status");
+          })
+          .catch((error) => {
+            // if there is no account yet, go to the sign-up page
+            navigate("/profile");
+          });
+      }
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
@@ -48,19 +87,7 @@ const LoginPage = () => {
   }
 
   function HandleSSO() {
-    axios
-      .get(`${apiURL}/sso`)
-      .then((response) => {
-        console.log('here')
-        if (response.request.responseURL) {
-          window.location.href = response.request.responseURL;
-        }
-        console.log(response)
-      })
-      .catch((error) => {
-        console.log(error);
-        setShowAlert(true);
-      });
+    window.location.href = "https://csa-4485-02.utdallas.edu/Shibboleth.sso/Login"
   }
 
   function HandleSignUp() {

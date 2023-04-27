@@ -16,7 +16,6 @@ app.use(cors(corsOptions));
 const team_routes = require('./routes/api/teams');
 const project_routes = require('./routes/api/projects');
 const login_route = require('./routes/api/login');
-const sso_route = require('./routes/api/sso');
 const registration_route = require('./routes/api/registration');
 const user_routes = require('./routes/api/users');
 const team_submit_routes = require('./routes/api/teams');
@@ -56,7 +55,6 @@ passport.use(new SamlStrategy(
         });
     })
 );
-app.use('/api/sso', passport.authenticate('saml', { successRedirect: '/projects', failureRedirect: '/projects', failureFlash: true }), sso_route);
 app.use('/api/login', login_route);
 
 app.use('/api/users', user_routes);

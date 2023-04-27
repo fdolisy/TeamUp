@@ -4,6 +4,7 @@ import { useReducer } from "react";
 import TeamStatus from "./pages/TeamStatus";
 import BrowseProjects from "./pages/BrowseProjects";
 import CreateProfile from "./pages/CreateProfile";
+import CreateSSOProfile from "./pages/CreateSSOProfile";
 import CreateTeam from "./pages/CreateTeam";
 import LoginPage from "./pages/LoginPage";
 import JoinExistingTeam from "./pages/JoinExistingTeam";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/status" element={<TeamStatus />} />
         <Route path="/create" element={<CreateTeam />} />
         <Route path="/profile" element={<CreateProfile />} />
+        <Route path="/ssoprofile" element={<CreateSSOProfile />} />
         <Route path="/browse" element={<BrowseProjects />} />
         <Route path="/join" element={<JoinExistingTeam />} />
         <Route path="/details" element={<ProjectDetails />} />

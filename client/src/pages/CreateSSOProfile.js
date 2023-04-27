@@ -3,6 +3,7 @@ import { useState } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { parse_attributes } from '../sso_helper.js'
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -37,6 +38,44 @@ axios
 
 export default function CreateProfile() {
   let navigate = useNavigate();
+  const [attributes, setAttributes] = useState(['', '', '']);
+
+  // Check whether the user has already signed in with SSO
+  if (attributes[0] === '') {
+    fetch('https://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(data => {
+
+        data = `<html><head><title>Session Summary</title></head><body><pre>
+    <u>Miscellaneous</u>
+    <strong>Session Expiration (barring inactivity):</strong> 480 minute(s)
+    <strong>Client Address:</strong> 10.50.123.254
+    <strong>SSO Protocol:</strong> urn:oasis:names:tc:SAML:2.0:protocol
+    <strong>Identity Provider:</strong> https://idptest.utdallas.edu/idp/shibboleth
+    <strong>Authentication Time:</strong> 2023-04-27T03:21:57.784Z
+    <strong>Authentication Context Class:</strong> urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+    <strong>Authentication Context Decl:</strong> (none)
+    
+    <u>Attributes</u>
+    <strong>cn</strong>: Cady Baltz
+    <strong>givenName</strong>: Cady
+    <strong>mail</strong>: cmb180010@utdallas.edu
+    <strong>sn</strong>: Baltz</pre></body></html>`
+
+        if (data.includes('mail')) {
+          const attributes = parse_attributes(data)
+          setAttributes(attributes)
+        }
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
 
   function handleSubmit() {
     const perferences = new Array(
@@ -50,25 +89,26 @@ export default function CreateProfile() {
       selectedProject8,
       selectedProject9
     );
-    console.log(perferences);
 
     axios
       .post("http://localhost:8082/api/register", {
         project_preferences: perferences,
-        email: document.getElementById("email").value,
-        first_name: document.getElementById("first").value,
-        last_name: document.getElementById("last").value,
+        email: attributes[2],
+        first_name: attributes[0],
+        last_name: attributes[1],
         address: document.getElementById("address").value,
         city: document.getElementById("city").value,
         zip: document.getElementById("zip").value,
-        password: document.getElementById("password").value,
+        password: "SSO",
         skills: selectedOptions,
         extra_information: document.getElementById("additional").value,
       })
       .then((response) => {
+        console.log('hey')
+        console.log(response)
         toast.success(
           "Sign-up successful. Welcome " +
-          document.getElementById("first").value +
+          attributes[0] +
           "!"
         );
         setTimeout(() => {
@@ -148,57 +188,13 @@ export default function CreateProfile() {
       <Navbar />
 
       <h1 className="text-4xl font-bold text-orange px-4 py-4">
-        Create Profile
+        {'Hi ' + attributes[0] + '! Finish completing your profile.'}
       </h1>
 
       <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
 
-      <div class="flex justify-between w-full px-5">
-        <div class="w-1/2 mx-2 px-12">
-          <form>
-            <label htmlFor="input3">Email</label>
-            <input
-              type="text"
-              id="email"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
-        </div>
-        <div className="w-1/2 mx-2 px-12">
-          <form>
-            <label htmlFor="input3">Password</label>
-            <input
-              type="password"
-              id="password"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
-        </div>
-      </div>
-
       <div className="flex justify-between w-full px-5">
-        <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">First Name</label>
-            <input
-              type="text"
-              id="first"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
-        </div>
-        <div className="w-1/3 mx-2 py-5">
-          <form>
-            <label htmlFor="input3">Last Name</label>
-            <input
-              type="text"
-              id="last"
-              className="border rounded py-2 px-3 w-full"
-            />
-          </form>
-        </div>
-
-        <div className="w-1/3 mx-2 py-5">
+        <div className="w-3/4 mx-2 py-5">
           <form>
             <label htmlFor="input3">Address</label>
             <input
@@ -208,10 +204,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-      </div>
-
-      <div className="flex justify-between w-full px-5">
-        <div className="w-1/2 mx-2 px-12">
+        <div className="w-1/4 mx-2 px-12 py-5">
           <form>
             <label htmlFor="input3">City</label>
             <input
@@ -221,7 +214,7 @@ export default function CreateProfile() {
             />
           </form>
         </div>
-        <div className="w-1/2 mx-2 px-12">
+        <div className="w-1/4 mx-2 px-12 py-5">
           <form>
             <label htmlFor="input3">Zip</label>
             <input
@@ -233,12 +226,11 @@ export default function CreateProfile() {
         </div>
       </div>
 
-      <div className="flex justify-between w-full py-5 px-5">
-        <label htmlFor="skills">Skills</label>
-        <div className="w-full flex flex-wrap items-center lg:justify-between justify-center">
-          <div className="w-full mt-8 ">
-            <Select options={skills} onChange={setHandle} isMulti />
-          </div>
+      <div className="bg-offWhite flex justify-between w-full px-5">
+        <div className="w-1/2 mx-2 py-5">
+          <label htmlFor="skills">Skills</label>
+          <Select options={skills} onChange={setHandle} isMulti />
+
         </div>
       </div>
 
