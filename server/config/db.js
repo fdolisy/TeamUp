@@ -1,21 +1,13 @@
 
 // db.js
-
 const mongoose = require('mongoose');
 const db = process.env.ATLAS_URI;
 
 const connectDB = async () => {
-  try {
-    mongoose.set('strictQuery', true);
-    await mongoose.connect(db, {
-      useNewUrlParser: true,
-    });
-
-    console.log('MongoDB is Connected...');
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
+  mongoose.set('strictQuery', true);
+  mongoose.connect(db)
+    .then(() => console.log('MongoDB connected...'))
+    .catch(err => console.log('MongoDB connection error:', err));
 };
 
 module.exports = connectDB;
