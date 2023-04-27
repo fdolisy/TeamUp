@@ -20,23 +20,26 @@ export default function Navbar() {
     navigate("/dashboard");
   }
   function logOut() {
-    const authAxios = axios.create({
-      baseURL: apiURL,
-      headers: {
-        "x-access-token": user.token,
-      },
-    });
+    // const authAxios = axios.create({
+    //   baseURL: apiURL,
+    //   headers: {
+    //     "x-access-token": user.token,
+    //   },
+    // });
 
-    authAxios
-      .put(`${apiURL}/users/${user.id}`, { logged_in: false })
-      .then((response) => {
-        setUser({
-          logged_in: false,
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    // authAxios
+    //   .put(`${apiURL}/users/${user.id}`, { logged_in: false })
+    //   .then((response) => {
+    //     setUser({
+    //       logged_in: false,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
+    setUser({
+      logged_in: false,
+    });
     navigate("/");
   }
 
@@ -45,6 +48,7 @@ export default function Navbar() {
       <div className="flex justify-between place-items-center relative container text-offWhite">
         <div
           onClick={handleClick}
+          style={{ cursor: "pointer" }}
           className="flex place-items-center relative space-x-5 rounded-xl"
         >
           <GroupsIcon sx={{ fontSize: 65 }} />

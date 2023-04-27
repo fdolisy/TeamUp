@@ -16,25 +16,6 @@ export default function Starting() {
     },
   });
 
-  // const fetchUserData = useCallback(async () => {
-  //   try {
-  //     console.log("hi");
-  //     const response = await authAxios.get(`${apiURL}/users/${user.id}`);
-  //     setUser({
-  //       ...user,
-  //       first_name: response.data.first_name,
-  //       last_name: response.data.last_name,
-  //       email: response.data.email,
-  //       project_preferences: response.data.project_preferences,
-  //       skills: response.data.skills,
-  //       team_id: response.data.team_id,
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // });
-  // fetchUserData();
-
   useEffect(() => {
     authAxios
       .get(`${apiURL}/users/${user.id}`)
@@ -45,8 +26,13 @@ export default function Starting() {
           last_name: response.data.last_name,
           email: response.data.email,
           project_preferences: response.data.project_preferences,
+          project_details: response.data.project_details,
           skills: response.data.skills,
           team_id: response.data.team_id,
+          address: response.data.address,
+          city: response.data.city,
+          zip: response.data.zip,
+          extra_information: response.data.extra_information,
         });
       })
       .catch((error) => {

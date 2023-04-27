@@ -29,6 +29,7 @@ axios
   .catch((error) => {
     console.log(error);
   });
+
 const CreateTeam = () => {
   const user = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
@@ -110,6 +111,11 @@ const CreateTeam = () => {
   const handlePassword = (e) => {
     password = e.target.value;
   };
+
+  const handleProjectName = (index) => {
+    if (user.user.project_details[index] === null) return "Select...";
+    else return user.user.project_details[index].name;
+  };
   useEffect(() => {
     axios
       .get(`${apiURL}/teams`)
@@ -120,7 +126,7 @@ const CreateTeam = () => {
         console.log(error);
       });
   }, []);
-  console.log(user.user.project_preferences[0]);
+
   return (
     <div className="bg-offWhite">
       <Navbar />
@@ -209,26 +215,28 @@ const CreateTeam = () => {
             <div className="bg-offWhite flex justify-between w-full px-5">
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 1</label>
+                  <label htmlFor="input1">Choice 1</label>
                   <Select
                     options={projectOptions}
-                    value={{ label: "2000", value: "2001" }}
                     onChange={handleProject1}
-                    defaultValue={{ label: 2002, value: 2002 }}
+                    defaultValue={{
+                      label: handleProjectName(0),
+                      value: handleProjectName(0),
+                    }}
                     className=" py-2 w-full"
-                    // value={{
-                    //   label: user.user.project_preferences[0],
-                    //   value: user.user.project_preferences[0],
-                    // }}
                   />
                 </form>
               </div>
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 2</label>
+                  <label htmlFor="input2">Choice 2</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject2}
+                    defaultValue={{
+                      label: handleProjectName(1),
+                      value: handleProjectName(1),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -240,6 +248,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject3}
+                    defaultValue={{
+                      label: handleProjectName(2),
+                      value: handleProjectName(2),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -249,20 +261,28 @@ const CreateTeam = () => {
             <div className="bg-offWhite flex justify-between w-full px-5">
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 4</label>
+                  <label htmlFor="input4">Choice 4</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject4}
+                    defaultValue={{
+                      label: handleProjectName(3),
+                      value: handleProjectName(3),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
               </div>
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 5</label>
+                  <label htmlFor="input5">Choice 5</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject5}
+                    defaultValue={{
+                      label: handleProjectName(4),
+                      value: handleProjectName(4),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -270,10 +290,14 @@ const CreateTeam = () => {
 
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 6</label>
+                  <label htmlFor="input6">Choice 6</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject6}
+                    defaultValue={{
+                      label: handleProjectName(5),
+                      value: handleProjectName(5),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -283,20 +307,28 @@ const CreateTeam = () => {
             <div className="bg-offWhite flex justify-between w-full px-5">
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 7</label>
+                  <label htmlFor="input7">Choice 7</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject7}
+                    defaultValue={{
+                      label: handleProjectName(6),
+                      value: handleProjectName(6),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
               </div>
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 8</label>
+                  <label htmlFor="input8">Choice 8</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject8}
+                    defaultValue={{
+                      label: handleProjectName(7),
+                      value: handleProjectName(7),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -304,10 +336,14 @@ const CreateTeam = () => {
 
               <div className="w-1/3 mx-2 py-5">
                 <form>
-                  <label htmlFor="input3">Choice 9</label>
+                  <label htmlFor="input9">Choice 9</label>
                   <Select
                     options={projectOptions}
                     onChange={handleProject9}
+                    defaultValue={{
+                      label: handleProjectName(8),
+                      value: handleProjectName(8),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
