@@ -1,8 +1,9 @@
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import UserContext from "../components/User";
 import { parse_attributes } from '../sso_helper.js'
 
 import { ToastContainer, toast } from "react-toastify";
@@ -38,6 +39,7 @@ axios
 
 export default function CreateProfile() {
   let navigate = useNavigate();
+  const { setUser, user } = useContext(UserContext);
   const [attributes, setAttributes] = useState(['', '', '']);
 
   // Check whether the user has already signed in with SSO
@@ -50,23 +52,6 @@ export default function CreateProfile() {
         return response.text();
       })
       .then(data => {
-
-        data = `<html><head><title>Session Summary</title></head><body><pre>
-    <u>Miscellaneous</u>
-    <strong>Session Expiration (barring inactivity):</strong> 480 minute(s)
-    <strong>Client Address:</strong> 10.50.123.254
-    <strong>SSO Protocol:</strong> urn:oasis:names:tc:SAML:2.0:protocol
-    <strong>Identity Provider:</strong> https://idptest.utdallas.edu/idp/shibboleth
-    <strong>Authentication Time:</strong> 2023-04-27T03:21:57.784Z
-    <strong>Authentication Context Class:</strong> urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
-    <strong>Authentication Context Decl:</strong> (none)
-    
-    <u>Attributes</u>
-    <strong>cn</strong>: Cady Baltz
-    <strong>givenName</strong>: Cady
-    <strong>mail</strong>: cmb180010@utdallas.edu
-    <strong>sn</strong>: Baltz</pre></body></html>`
-
         if (data.includes('mail')) {
           const attributes = parse_attributes(data)
           setAttributes(attributes)
@@ -104,16 +89,19 @@ export default function CreateProfile() {
         extra_information: document.getElementById("additional").value,
       })
       .then((response) => {
-        console.log('hey')
-        console.log(response)
         toast.success(
           "Sign-up successful. Welcome " +
           attributes[0] +
           "!"
         );
-        setTimeout(() => {
-          navigate("/status");
-        }, 1000);
+        console.log(response)
+        setUser({
+          ...user,
+          token: response.data.token,
+          id: response.data._id,
+          logged_in: true,
+        });
+        navigate("/status");
       })
       .catch((error) => {
         toast.error("Please enter try again!");

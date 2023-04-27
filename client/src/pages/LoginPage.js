@@ -20,23 +20,6 @@ const LoginPage = () => {
       return response.text();
     })
     .then(data => {
-
-      data = `<html><head><title>Session Summary</title></head><body><pre>
-    <u>Miscellaneous</u>
-    <strong>Session Expiration (barring inactivity):</strong> 480 minute(s)
-    <strong>Client Address:</strong> 10.50.123.254
-    <strong>SSO Protocol:</strong> urn:oasis:names:tc:SAML:2.0:protocol
-    <strong>Identity Provider:</strong> https://idptest.utdallas.edu/idp/shibboleth
-    <strong>Authentication Time:</strong> 2023-04-27T03:21:57.784Z
-    <strong>Authentication Context Class:</strong> urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
-    <strong>Authentication Context Decl:</strong> (none)
-    
-    <u>Attributes</u>
-    <strong>cn</strong>: Cady Baltz
-    <strong>givenName</strong>: Cady
-    <strong>mail</strong>: cmb180010@utdallas.edu
-    <strong>sn</strong>: Baltz</pre></body></html>`
-
       if (data.includes('mail')) {
         const attributes = parse_attributes(data)
 
@@ -57,13 +40,14 @@ const LoginPage = () => {
           })
           .catch((error) => {
             // if there is no account yet, go to the sign-up page
-            navigate("/profile");
+            navigate("/ssoprofile");
           });
       }
     })
     .catch(error => {
       console.error('There was a problem with the fetch operation:', error);
     });
+
 
   function HandleSubmit() {
     axios
