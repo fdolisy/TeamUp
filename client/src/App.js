@@ -10,6 +10,7 @@ import BrowseExistingTeam from "./pages/BrowseExistingTeams";
 import ProjectDetails from "./pages/ProjectDetails";
 import ProfileDashboard from "./pages/ProfileDashboard";
 import JoinTeam from "./pages/JoinTeam";
+import TeamDashboard from "./pages/TeamDashboard";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserContext, initialUserData, reducer } from "./components/User";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/joinTeam" element={<JoinTeam />} />
         <Route path="/details" element={<ProjectDetails />} />
         <Route path="/dashboard" element={<ProfileDashboard />} />
+        <Route path="/team" element={<TeamDashboard />} />
         <Route path="/" element={<LoginPage />} />
       </Routes>
     </UserContext.Provider>

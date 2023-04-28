@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useContext } from "react";
 import UserContext from "../components/User";
+import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
 
 export default function Navbar() {
   let navigate = useNavigate();
@@ -18,6 +19,10 @@ export default function Navbar() {
   }
   function profile() {
     navigate("/dashboard");
+  }
+
+  function team() {
+    navigate("/team");
   }
   function logOut() {
     // const authAxios = axios.create({
@@ -60,6 +65,13 @@ export default function Navbar() {
               className="text-offWhite"
               fontSize="large"
               onClick={profile}
+            />
+          </IconButton>
+          <IconButton aria-label="web-access">
+            <AutoAwesomeMosaicIcon
+              className="text-offWhite"
+              fontSize="large"
+              onClick={team}
             />
           </IconButton>
           <IconButton aria-label="settings">

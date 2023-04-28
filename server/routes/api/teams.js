@@ -98,6 +98,7 @@ app.get("/submit_all", async (req, res) => {
           //Loop through each memberId and retreive each needed data
           for (let i = 0; i < memberIds.length; i++) {
             var member = await User.findOne({ _id: memberIds[i] }).exec();
+            console.log("Name " + i + ": " + member.first_name);
             cleanMemberNames +=
               member.first_name +
               " " +
@@ -161,8 +162,29 @@ app.get("/submit_all", async (req, res) => {
 // @access Public
 app.get("/:id", (req, res) => {
   Team.findById(req.params.id)
-    .then((team) => res.json(team))
-    .catch((err) => res.status(404).json({ noteamfound: err }));
+    .then(async (team) => {
+      var user_ids = team.members;
+      var project_ids = team.team_project_preferences;
+      var user_details = await Promise.all(
+        user_ids.map(async (id) => {
+          var user = await User.findById(id);
+          return user;
+        })
+      );
+
+      var project_details = await Promise.all(
+        project_ids.map(async (id) => {
+          var project = await Project.findById(id);
+          return project;
+        })
+      );
+
+      team = team.toJSON();
+      team.member_details = user_details;
+      team.project_preference_details = project_details;
+      res.json(team);
+    })
+    .catch((err) => res.status(404).json({ noteamsfound: err }));
 });
 
 // @route POST api/teams
@@ -174,6 +196,7 @@ app.get("/:id", (req, res) => {
 // @param {String} team_password
 app.post("/", async (req, res) => {
   var team = req.body;
+  console.log(req.body);
 
   if (!team.is_public) {
     // Make sure private teams include a password in the request
@@ -202,7 +225,7 @@ app.post("/", async (req, res) => {
     .catch((err) => res.status(400).json({ error: err }));
 });
 
-// @route PUT api/team_submit
+// @route POST api/team_submit
 // @description Team submission
 // @access Public
 // @param [String] timings
