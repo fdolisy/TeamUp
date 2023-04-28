@@ -164,7 +164,6 @@ app.get('/:id', (req, res) => {
 // @param {String} team_password
 app.post('/', async (req, res) => {
   var team = req.body
-  console.log(req.body)
 
   if (!team.is_public) {
     // Make sure private teams include a password in the request
@@ -188,9 +187,39 @@ app.post('/', async (req, res) => {
     .then(team => {
       team.members.forEach(async member_id => {
         var user = await User.findById(member_id)
-        user.team = team.id
         user.save()
           .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+
+        // if the user is already on a team, remove them from that team
+        if (user.team && user.team != team.id) {
+          var old_team = await Team.findById(user.team)
+
+          // if the user is on a finalized team already, do not allow them to join a new team
+          if (old_team.is_finalized) {
+            res.status(400).json({ mgs: 'User ' + user.id + ' is already on a finalized team and cannot join a new one' })
+            return
+          }
+
+          // remove user from their old team
+          team_without_user = []
+          for (let i = 0; i < old_team.members.length; i++) {
+            if (old_team.members[i] != user.id) {
+              team_without_user.push(old_team.members[i])
+            }
+          }
+
+          old_team.members = team_without_user
+
+          // if this user was the only member on that team, delete the old team completely
+          if (team_without_user.length == 0) {
+            old_team.delete()
+              .then(old_team => console.log("Deleted team " + old_team.id))
+          } else {
+            old_team.save()
+              .then(old_team => console.log("Removed user " + user.id + " from team " + old_team.id))
+          }
+        }
+        user.team = team.id
       });
       res.json({ msg: 'Team ' + team.id + ' added successfully' })
     })
@@ -355,7 +384,6 @@ app.put('/join/:id', auth, async (req, res) => {
       old_team.save()
         .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
     }
-
   }
 
   user.team = team.id
