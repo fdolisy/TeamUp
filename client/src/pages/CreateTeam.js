@@ -55,9 +55,9 @@ const CreateTeam = () => {
     );
     console.log(preferences);
     // console.log(password);
-    console.log(user.user);
-    console.log(user.id);
-    console.log(user.user === null);
+    // console.log(user.user);
+    // console.log(user.id);
+    // console.log(user.user === null);
     var id = user.user === null ? user.user.id : user.id;
     axios
       .post(`${apiURL}/teams`, {
@@ -69,7 +69,7 @@ const CreateTeam = () => {
       .then((response) => {
         // console.log(response.data);
         // var data = response.data;
-        console.log(response.data.msg.split(" ")[1]);
+        // console.log(response.data.msg.split(" ")[1]);
         setUser({
           ...user,
           team_id: response.data.msg,

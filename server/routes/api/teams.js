@@ -225,10 +225,11 @@ app.post("/", async (req, res) => {
     .catch((err) => res.status(400).json({ error: err }));
 });
 
-// @route POST api/team_submit
-// @description Team submission
+// @route PUT api/team_submit
+// @description Team submission  - send teams emails with team info
 // @access Public
 // @param [String] timings
+// @param [String]
 // @param {Boolean} is_finalized
 app.put("/team_submit/:id", async (req, res) => {
   try {
@@ -237,6 +238,7 @@ app.put("/team_submit/:id", async (req, res) => {
       {
         $set: {
           timings: req.body.timings,
+          team_project_preferences: req.body.team_project_preferences,
           is_finalized: "true",
         },
       },
@@ -285,7 +287,7 @@ async function displayTeamData(post) {
     "This is the information we have from your submission: \n";
   display += "\n";
   //display project preferences
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < post.team_project_preferences.length; i++) {
     var projectID = post.team_project_preferences[i].toString();
     var project = await Project.findOne({ _id: projectID }).exec();
     display += "Project preference " + (1 + i) + ": " + project.name + "\n";
