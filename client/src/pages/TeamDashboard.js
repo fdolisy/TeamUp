@@ -232,14 +232,14 @@ export default function TeamDashboard() {
               <Select options={projectOptions} onChange={handleProject9} />
             </div>
           </div>
-        </div>
-        <div className="justify-end px-10 py-10">
-          <button
-            className="bg-green text-white px-10 py-2 rounded-md "
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+          <div className="px-10 py-10">
+            <button
+              className="bg-green text-white px-10 py-2 rounded-md "
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </div>
