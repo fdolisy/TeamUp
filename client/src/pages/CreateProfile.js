@@ -1,8 +1,10 @@
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+import UserContext from "../components/User";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -37,6 +39,7 @@ axios
 
 export default function CreateProfile() {
   let navigate = useNavigate();
+  const { setUser, user } = useContext(UserContext);
 
   function handleSubmit() {
     const perferences = new Array(
@@ -68,10 +71,16 @@ export default function CreateProfile() {
       .then((response) => {
         toast.success(
           "Sign-up successful. Welcome " +
-            document.getElementById("first").value +
-            "!"
+          document.getElementById("first").value +
+          "!"
         );
         setTimeout(() => {
+          setUser({
+            ...user,
+            token: response.data.token,
+            id: response.data._id,
+            logged_in: true,
+          });
           navigate("/status");
         }, 1000);
       })

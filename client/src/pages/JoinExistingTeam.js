@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 
 const JoinExistingTeam = () => {
   const [teams, setTeams] = useState([]);
+  let navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -21,6 +22,7 @@ const JoinExistingTeam = () => {
 
   function handleClick(team) {
     console.log(`Clicked on project "${team.team_number}"`);
+    navigate(`/team_details`, { state: { team } });
   }
 
   return (
