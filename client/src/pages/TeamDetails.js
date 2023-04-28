@@ -86,8 +86,8 @@ export default function TeamDetails() {
                             <p className="text-xl">{team.team_number}</p>
                         </div>
                         <div>
-                            <p className="text-2xl font-bold mb-4">Current Team Names:</p>
-                            <ul className="list-disc ml-6">
+                            <p className="text-2xl font-bold mb-4">Current Team Members:</p>
+                            <ul className="text-xl">
                                 {members.map(member => (
                                     <div key={member.id}>
                                         <p>{member.first_name} {member.last_name}</p>
@@ -98,7 +98,7 @@ export default function TeamDetails() {
                         <div>
                             <p className="text-2xl font-bold mb-4">Project Preferences:</p>
                             {projects && projects.length > 0 ? (
-                                <ul className="list-disc ml-6">
+                                <ul className="text-xl">
                                     {projects.map((project) => (
                                         <div key={project.id}>
                                             <p>{project.name ? project.name : "No Name Provided"}</p>
@@ -110,13 +110,15 @@ export default function TeamDetails() {
                             )}
                         </div>
                     </div>
+                    <br />
                     {!team.is_public && (
                         <div className="mb-4">
+                            <p className="text-2xl font-bold mb-4">Private Team Password:</p>
                             <label
                                 className="block text-gray-700 text-md font-bold mb-2"
                                 htmlFor="team-password"
                             >
-                                Enter team password:
+                                If you do not know the password, reach out to the team's creator.
                             </label>
                             <input
                                 className="appearance-none border-2 border-gray-200 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-green-500"
