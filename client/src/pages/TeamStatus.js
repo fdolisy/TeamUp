@@ -33,6 +33,7 @@ export default function Starting() {
           city: response.data.city,
           zip: response.data.zip,
           extra_information: response.data.extra_information,
+          team_id: response.data.team,
         });
       })
       .catch((error) => {
