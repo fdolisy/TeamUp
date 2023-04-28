@@ -44,23 +44,23 @@ export default function JoinTeam() {
             </div>
             <div className="">
               <p className="text-2xl font-bold mb-4">Team Members:</p>
-              {/* <ul>
+              <ul>
                 {team.member_details.map((member) => (
-                //   <li className="text-xl" key={member._id}>
-                //     {member.first} {member.last}
-                //   </li>
-                // ))}
-              </ul> */}
+                  <li className="text-xl" key={member._id}>
+                    {member.first_name} {member.last_name}
+                  </li>
+                ))}
+              </ul>
             </div>
             <div className="">
               <p className="text-2xl font-bold mb-4">Team Member Skills:</p>
-              {/* <ul>
-                {team.members.map((member) => (
-                //   <li className="text-xl" key={member}>
-                //     {member}
-                //   </li>
-                // ))}
-              </ul> */}
+              <ul>
+                {team.member_details.map((member) => (
+                  <li className="text-xl" key={member._id}>
+                    {member.skills.join(" ")}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
@@ -68,25 +68,34 @@ export default function JoinTeam() {
           <div className="grid grid-rows-2 grid-flow-col gap-8">
             <div className="row-span-2">
               <p className="text-2xl font-bold mb-4">Team Preferences:</p>
-              {/* <ul>
+              <ul>
                 {team.team_project_preferences.map((project, index) => (
-                //   <li className="text-xl" key={project}>
-                //     {index + 1}) {project}
-                //   </li>
-                // ))}
-              </ul> */}
+                  <li className="text-xl" key={project}>
+                    {index + 1}) {project}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="col-span-2 my-3">
-              <input
-                type="password"
-                name="Team Password"
-                className={`w-80 p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4 `}
-                placeholder="Join Private Team With Password"
-                onChange={handlePassword}
-                value={password}
-              />
+            {team.is_public && (
+              <div className="row-span-1 col-span-2">
+                <input
+                  type="password"
+                  name="Team Password"
+                  className={`w-80 p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mt-4 `}
+                  placeholder="Join Private Team With Password"
+                  onChange={handlePassword}
+                  value={password}
+                />
+              </div>
+            )}
+            <div className="row-span-2 col-span-2 mt-5">
+              <button
+                className="bg-green text-white px-10 py-2 rounded-md mx-3 "
+                onClick={handleJoin}
+              >
+                Join
+              </button>
             </div>
-            <div></div>
           </div>
         </div>
       </div>
