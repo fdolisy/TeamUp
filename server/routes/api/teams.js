@@ -185,7 +185,15 @@ app.post('/', async (req, res) => {
   team.is_finalized = false
 
   Team.create(team)
-    .then(team => res.json({ msg: 'Team ' + team.id + ' added successfully' }))
+    .then(team => {
+      team.members.forEach(async member_id => {
+        var user = await User.findById(member_id)
+        user.team = team.id
+        user.save()
+          .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+      });
+      res.json({ msg: 'Team ' + team.id + ' added successfully' })
+    })
     .catch(err => res.status(400).json({ error: err }));
 });
 
