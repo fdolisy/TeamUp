@@ -181,11 +181,12 @@ export default function TeamDashboard() {
               </div>
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-green px-4 py-4">
+          <br />
+          <h1 className="text-2xl font-bold mb-4">
             Top 9 Project Choices
           </h1>
 
-          <div className="bg-offWhite flex justify-between w-full px-5">
+          <div className="bg-offWhite flex justify-between w-full">
             <div className="w-1/3 mx-2 py-5">
               <label> Project 1 </label>
               <Select options={projectOptions} onChange={handleProject1} />
@@ -201,7 +202,7 @@ export default function TeamDashboard() {
             </div>
           </div>
 
-          <div className="bg-offWhite flex justify-between w-full px-5">
+          <div className="bg-offWhite flex justify-between w-full">
             <div className="w-1/3 mx-2 py-5">
               <label> Project 4 </label>
               <Select options={projectOptions} onChange={handleProject4} />
@@ -217,7 +218,7 @@ export default function TeamDashboard() {
             </div>
           </div>
 
-          <div className="bg-offWhite flex justify-between w-full px-5">
+          <div className="bg-offWhite flex justify-between w-full">
             <div className="w-1/3 mx-2 py-5">
               <label> Project 7 </label>
               <Select options={projectOptions} onChange={handleProject7} />
@@ -232,9 +233,10 @@ export default function TeamDashboard() {
               <Select options={projectOptions} onChange={handleProject9} />
             </div>
           </div>
-          <div className="px-10 py-10">
+          <br />
+          <div className="px-2">
             <button
-              className="bg-green text-white px-10 py-2 rounded-md "
+              className="bg-green text-white px-10 py-2 rounded-md"
               onClick={handleSubmit}
             >
               Submit

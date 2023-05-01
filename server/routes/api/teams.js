@@ -49,8 +49,17 @@ app.get("/", (req, res) => {
                 return user;
               })
             );
+
+            var project_ids = team.team_project_preferences;
+            var project_details = await Promise.all(
+              project_ids.map(async (id) => {
+                var project = await Project.findById(id);
+                return project;
+              })
+            );
             team = team.toJSON();
             team.member_details = user_details;
+            team.project_details = project_details;
             return team;
           })
         );
@@ -145,8 +154,8 @@ app.get("/submit_all", async (req, res) => {
       //send confirmation message and instructions on how to access the file
       res.send(
         "Successfully created file: '" +
-          fileName +
-          "' inside your 'server' folder! If you need an updated file, please close out the file, and request again."
+        fileName +
+        "' inside your 'server' folder! If you need an updated file, please close out the file, and request again."
       );
       email.sendCsvFile();
     } catch (error) {
