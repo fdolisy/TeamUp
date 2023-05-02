@@ -1,8 +1,9 @@
 import Navbar from "../components/Navbar";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import UserContext from "../components/User";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -37,6 +38,7 @@ axios
 
 export default function CreateProfile() {
   let navigate = useNavigate();
+  const { setUser, user } = useContext(UserContext);
 
   function handleSubmit() {
     const perferences = new Array(
@@ -50,7 +52,7 @@ export default function CreateProfile() {
       selectedProject8,
       selectedProject9
     );
-    console.log(perferences);
+    // console.log(perferences);
 
     axios
       .post("http://localhost:8082/api/register", {
@@ -66,12 +68,24 @@ export default function CreateProfile() {
         extra_information: document.getElementById("additional").value,
       })
       .then((response) => {
+        setUser({
+          ...user,
+          token: response.data.token,
+          id: response.data._id,
+          logged_in: true,
+        });
         toast.success(
           "Sign-up successful. Welcome " +
-            document.getElementById("first").value +
-            "!"
+          document.getElementById("first").value +
+          "!"
         );
         setTimeout(() => {
+          setUser({
+            ...user,
+            token: response.data.token,
+            id: response.data._id,
+            logged_in: true,
+          });
           navigate("/status");
         }, 1000);
       })
@@ -153,8 +167,8 @@ export default function CreateProfile() {
 
       <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
 
-      <div class="flex justify-between w-full px-5">
-        <div class="w-1/2 mx-2 px-12">
+      <div className="flex justify-between w-full px-5">
+        <div className="w-1/2 mx-2 px-12">
           <form>
             <label htmlFor="input3">Email</label>
             <input

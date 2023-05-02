@@ -3,16 +3,54 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState, useContext } from "react";
 import UserContext from "../components/User";
+import { parse_attributes } from '../sso_helper.js'
 
 const LoginPage = () => {
   let navigate = useNavigate();
   const { setUser, user } = useContext(UserContext);
   const [showAlert, setShowAlert] = useState(false);
-  const apiURL = "http://localhost:8082/api";
+
+  // NOTE: this will ONLY work on the deployed version (not localhost) due to CORS violations
+  // Check whether the user has already signed in with SSO
+  fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(data => {
+      if (data.includes('mail')) {
+        const attributes = parse_attributes(data)
+
+        // try to login this user
+        axios
+          .post(`api/login`, {
+            email: attributes[2],
+            password: "SSO",
+          })
+          .then((response) => {
+            setUser({
+              ...user,
+              token: response.data.token,
+              id: response.data.userID,
+              logged_in: true,
+            });
+            navigate("/status");
+          })
+          .catch((error) => {
+            // if there is no account yet, go to the sign-up page
+            navigate("/ssoprofile");
+          });
+      }
+    })
+    .catch(error => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
 
   function HandleSubmit() {
     axios
-      .post(`${apiURL}/login`, {
+      .post(`api/login`, {
         email: document.getElementById("email").value,
         password: document.getElementById("password").value,
       })
@@ -31,19 +69,102 @@ const LoginPage = () => {
       });
   }
 
+  async function isLoggedIn() {
+    var result = await fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          return '';
+        }
+        return response.text();
+      })
+      .then(async data => {
+        if (data.includes('mail')) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    return result;
+  }
+
+  async function loginPopup() {
+    var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Login", "popup", 'width=600,height=600');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(async data => {
+        if (data.includes('mail')) {
+          popup.close();
+          navigate("/status");
+        }
+      });
+  }
+
+  async function HandleSSO() {
+    // Check whether the user has already signed in with SSO
+    fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(async data => {
+        if (data.includes('mail')) {
+          const attributes = parse_attributes(data)
+          // try to login this user
+          axios
+            .post(`api/login`, {
+              email: attributes[2],
+              password: "SSO",
+            })
+            .then((response) => {
+              setUser({
+                ...user,
+                token: response.data.token,
+                id: response.data.userID,
+                logged_in: true,
+              });
+              navigate("/status");
+            })
+            .catch(async (error) => {
+              await loginPopup();
+              var isLoginDone = false;
+              while (!isLoginDone) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                isLoginDone = await isLoggedIn();
+              }
+            });
+        } else {
+          await loginPopup();
+          var isLoginDone = false;
+          while (!isLoginDone) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            isLoginDone = await isLoggedIn();
+          }
+        }
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
+  }
+
   function HandleSignUp() {
     navigate("/profile");
   }
   return (
-    <div className="bg-offWhite">
+    <div className="bg-offWhite h-screen">
       <Navbar />
-
       <div className="flex h-screen">
         <div className="flex flex-col m-auto">
           <div className="shadow-lg rounded-lg w-[500px] p-3">
             <div className="space-y-4">
               <div className="text-center text-6xl font-bold">Hello!</div>
-
               {showAlert && (
                 <div
                   className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
@@ -68,6 +189,13 @@ const LoginPage = () => {
               )}
 
               <div className="flex flex-col space-y-4 py-2">
+                <button
+                  className={"obtn text-2xl py-3 px-4 "}
+                  onClick={HandleSSO}
+                >
+                  Login with UTD SSO
+                </button>
+                <br />
                 <div>
                   <label htmlFor="email">Email</label>
                   <input
@@ -86,7 +214,6 @@ const LoginPage = () => {
                     placeholder="Your Password"
                   />
                 </div>
-
                 <div className="flex space-x-10 justify-center items-center mt-6">
                   <button
                     className={"obtn text-2xl py-3 px-4 "}
@@ -94,7 +221,6 @@ const LoginPage = () => {
                   >
                     Login
                   </button>
-
                   <button
                     className={"obtn text-2xl py-3 px-4 "}
                     onClick={HandleSignUp}

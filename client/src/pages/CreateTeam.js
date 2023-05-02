@@ -1,17 +1,21 @@
-import React from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import Select from "react-select";
 import axios from "axios";
 import UserContext from "../components/User";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const project_names = [];
 const objs = [];
 const projectOptions = [];
+const apiURL = "http://localhost:8082/api";
 
 axios
-  .get("http://localhost:8082/api/projects/")
+  .get(`${apiURL}/projects`)
   .then((response) => {
     const project_objects = new Array(response.data);
 
@@ -33,6 +37,8 @@ axios
 const CreateTeam = () => {
   const user = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
+  const [teamNumber, setTeamNum] = useState(0);
+  let navigate = useNavigate();
   function handleSubmit() {
     const preferences = new Array(
       selectedProject1,
@@ -45,22 +51,26 @@ const CreateTeam = () => {
       selectedProject8,
       selectedProject9
     );
-    console.log(preferences);
-    console.log(password);
 
     axios
-      .post("http://localhost:8082/api/teams", {
-        members: user.id,
+      .post(`${apiURL}/teams`, {
+        members: user.user.id,
         is_public: isPublic,
         team_project_preferences: preferences,
         team_password: password,
       })
       .then((response) => {
+        toast.success(
+          "Team Creation Successful!"
+        );
         console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
+    setTimeout(() => {
+      navigate("/status");
+    }, 1000);
   }
 
   // projects
@@ -111,14 +121,63 @@ const CreateTeam = () => {
     password = e.target.value;
   };
 
-  return (
-    <div className="bg-offWhite">
-      <Navbar />
+  const handleProjectName = (index) => {
+    if (user.user.project_details[index] === null) {
+      return "Select...";
+    } else {
+      switch (index) {
+        case 0:
+          handleProject1({ 'value': user.user.project_details[index]._id })
+          break;
+        case 1:
+          handleProject2({ 'value': user.user.project_details[index]._id })
+          break;
+        case 2:
+          handleProject3({ 'value': user.user.project_details[index]._id })
+          break;
+        case 3:
+          handleProject4({ 'value': user.user.project_details[index]._id })
+          break;
+        case 4:
+          handleProject5({ 'value': user.user.project_details[index]._id })
+          break;
+        case 5:
+          handleProject6({ 'value': user.user.project_details[index]._id })
+          break;
+        case 6:
+          handleProject7({ 'value': user.user.project_details[index]._id })
+          break;
+        case 7:
+          handleProject8({ 'value': user.user.project_details[index]._id })
+          break;
+        case 8:
+          handleProject9({ 'value': user.user.project_details[index]._id })
+          break;
+        default:
+          break;
+      }
+      return user.user.project_details[index].name;
+    }
+  };
+  useEffect(() => {
+    axios
+      .get(`${apiURL}/teams`)
+      .then((response) => {
+        setTeamNum(Object.keys(response.data).length + 1);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
+  return (
+    <div className="bg-offWhite h-screen">
+      <Navbar />
+      <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
       <div className="flex flex-col">
         <div className="basis-5/6 px-4">
           <h1 className="text-4xl text-center font-bold text-orange py-4">
-            Team X
+            Team {teamNumber}
           </h1>
           <div className="flex flex-col shadow sm:rounded-md">
             <div className="mt-5 sm:mt-0">
@@ -203,6 +262,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject1}
+                    defaultValue={{
+                      label: handleProjectName(0),
+                      value: handleProjectName(0),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -213,6 +276,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject2}
+                    defaultValue={{
+                      label: handleProjectName(1),
+                      value: handleProjectName(1),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -224,6 +291,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject3}
+                    defaultValue={{
+                      label: handleProjectName(2),
+                      value: handleProjectName(2),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -237,6 +308,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject4}
+                    defaultValue={{
+                      label: handleProjectName(3),
+                      value: handleProjectName(3),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -247,6 +322,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject5}
+                    defaultValue={{
+                      label: handleProjectName(4),
+                      value: handleProjectName(4),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -258,6 +337,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject6}
+                    defaultValue={{
+                      label: handleProjectName(5),
+                      value: handleProjectName(5),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -271,6 +354,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject7}
+                    defaultValue={{
+                      label: handleProjectName(6),
+                      value: handleProjectName(6),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -281,6 +368,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject8}
+                    defaultValue={{
+                      label: handleProjectName(7),
+                      value: handleProjectName(7),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>
@@ -292,6 +383,10 @@ const CreateTeam = () => {
                   <Select
                     options={projectOptions}
                     onChange={handleProject9}
+                    defaultValue={{
+                      label: handleProjectName(8),
+                      value: handleProjectName(8),
+                    }}
                     className=" py-2 w-full"
                   />
                 </form>

@@ -16,22 +16,30 @@ export default function Starting() {
     },
   });
 
-  authAxios
-    .get(`${apiURL}/users/${user.id}`)
-    .then((response) => {
-      setUser({
-        ...user,
-        first_name: response.data.first_name,
-        last_name: response.data.last_name,
-        email: response.data.email,
-        project_pref: response.data.project_pref,
-        skills: response.data.skills,
-        team_id: response.data.team_id,
+  useEffect(() => {
+    authAxios
+      .get(`${apiURL}/users/${user.id}`)
+      .then((response) => {
+        setUser({
+          ...user,
+          first_name: response.data.first_name,
+          last_name: response.data.last_name,
+          email: response.data.email,
+          project_preferences: response.data.project_preferences,
+          project_details: response.data.project_details,
+          skills: response.data.skills,
+          team_id: response.data.team_id,
+          address: response.data.address,
+          city: response.data.city,
+          zip: response.data.zip,
+          extra_information: response.data.extra_information,
+          team_id: response.data.team,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  }, []);
 
   function createTeam() {
     navigate("/create");
@@ -49,7 +57,7 @@ export default function Starting() {
       <Navbar />
       <div className="flex h-screen">
         <div className="flex flex-col m-auto">
-          <div className="shadow-lg rounded-lg w-[500px] p-3">
+          <div className="shadow-lg rounded-lg w-[600px] p-3">
             <div className="space-y-4">
               <div className="text-6xl font-bold">
                 Greetings {user.first_name}

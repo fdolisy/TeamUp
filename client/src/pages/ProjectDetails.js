@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 import Navbar from "../components/Navbar";
-import axios from "axios";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function ProjectDetails() {
   const location = useLocation();
+  console.log(location);
   const project = location.state.project;
   return (
     <div className="bg-offWhite h-screen">
