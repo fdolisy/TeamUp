@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState, useContext, useEffect } from "react";
 import Select from "react-select";
@@ -12,9 +12,10 @@ import "react-toastify/dist/ReactToastify.css";
 const project_names = [];
 const objs = [];
 const projectOptions = [];
+const apiURL = "http://localhost:8082/api";
 
 axios
-  .get("http://localhost:8082/api/projects/")
+  .get(`${apiURL}/projects`)
   .then((response) => {
     const project_objects = new Array(response.data);
 
@@ -37,6 +38,7 @@ const CreateTeam = () => {
   const user = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
   const [teamNumber, setTeamNum] = useState(0);
+  let navigate = useNavigate();
   function handleSubmit() {
     const preferences = new Array(
       selectedProject1,
@@ -50,10 +52,8 @@ const CreateTeam = () => {
       selectedProject9
     );
 
-    console.log(preferences)
-
     axios
-      .post("http://localhost:8082/api/teams/", {
+      .post(`${apiURL}/teams`, {
         members: user.user.id,
         is_public: isPublic,
         team_project_preferences: preferences,
@@ -68,6 +68,9 @@ const CreateTeam = () => {
       .catch((error) => {
         console.log(error);
       });
+    setTimeout(() => {
+      navigate("/status");
+    }, 1000);
   }
 
   // projects
@@ -119,7 +122,7 @@ const CreateTeam = () => {
   };
 
   const handleProjectName = (index) => {
-    if (!user || !user.user || !user.user.project_details || user.user.project_details[index] === null) {
+    if (user.user.project_details[index] === null) {
       return "Select...";
     } else {
       switch (index) {
@@ -158,7 +161,7 @@ const CreateTeam = () => {
   };
   useEffect(() => {
     axios
-      .get(`/api/teams`)
+      .get(`${apiURL}/teams`)
       .then((response) => {
         setTeamNum(Object.keys(response.data).length + 1);
       })
@@ -168,14 +171,14 @@ const CreateTeam = () => {
   }, []);
 
   return (
-    <div className="bg-offWhite">
+    <div className="bg-offWhite h-screen">
       <Navbar />
       <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
       <div className="flex flex-col">
         <div className="basis-5/6 px-4">
           <h1 className="text-4xl text-center font-bold text-orange py-4">
             Team {teamNumber}
-          </h1>ß
+          </h1>
           <div className="flex flex-col shadow sm:rounded-md">
             <div className="mt-5 sm:mt-0">
               <div className="md:grid md:grid-cols-3 md:gap-6">

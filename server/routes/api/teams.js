@@ -47,8 +47,16 @@ app.get('/', (req, res) => {
             var user = await User.findById(id);
             return user;
           }))
+          var project_ids = team.team_project_preferences;
+          var project_details = await Promise.all(
+            project_ids.map(async (id) => {
+              var project = await Project.findById(id);
+              return project;
+            })
+          );
           team = team.toJSON()
           team.member_details = user_details;
+          team.project_details = project_details;
           return team;
         }))
         res.json(teams_details)
@@ -67,52 +75,70 @@ app.get('/submit_all', async (req, res) => {
     const teams = await Team.find().lean();
     try {
       //Headers of the csv file as well as what information we are looking at in the teams document
-      const fields = ['team_number', 'team_project_preferences', 'timings', 'members'];
-
+      //const fields = ['team_number', 'team_project_preferences',' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', 'timings','', '','', 'members'];
+      //const fields = ['team_number', 'team_project_preferences','2nd', '3rd', '4th', '5th', '6th', '7th','8th', '9th', 'timings', 'members'];
+      const fields = ['team_number', 'team_project_preferences', , 'timings', , 'members'];
       //csvData contains all data being sent to the csv file
       const csvData = await Promise.all(teams.map(async team => {
 
-        //Use the member IDs from the members field to extract member information
-        if (team.team_project_preferences[0] != null) {
-          const projectIds = team.team_project_preferences.map(project => project._id);
-          var cleanProjectNames = "";
-          for (let i = 0; i < projectIds.length; i++) {
-            var project = await Project.findOne({ _id: projectIds[i] }).exec();
-            cleanProjectNames += project.name + " ";
+        try {
+
+          try {
+            //Use the member IDs from the members field to extract member information
+            if (team.team_project_preferences[0] != null) {
+              const projectIds = team.team_project_preferences.map(project => project._id);
+              var cleanProjectNames = "";
+              for (let i = 0; i < projectIds.length; i++) {
+                var project = await Project.findOne({ _id: projectIds[i] }).exec();
+                cleanProjectNames += project.name + ", ";
+              }
+            }
+          } catch {
+            console.error("Could not get project");
           }
+
+
+          try {
+            // Use the member IDs from the members field to extract member information
+            const memberIds = team.members.map(member => member._id);
+            var cleanMemberNames = "";
+            //Loop through each memberId and retreive each needed data
+            for (let i = 0; i < memberIds.length; i++) {
+              var member = await User.findOne({ _id: memberIds[i] }).exec();
+              cleanMemberNames += member.first_name + " " + member.last_name + " | "
+                + member.email + " | " + member.address + " " + member.city
+                + " " + member.zip + " | ";
+            }
+          } catch {
+            console.error("Could not get member");
+          }
+
+          try {
+            //Get all timings 
+            var cleanTimings = "";
+            for (let i = 0; i < team.timings.length; i++) {
+              cleanTimings += team.timings[i] + ", ";
+            }
+          } catch {
+            console.error("Could not get timing");
+          }
+
+
+          //Return all needed strings to be added into csvData
+          return {
+            team_number: team.team_number,
+            team_project_preferences: cleanProjectNames,
+            timings: cleanTimings,
+            members: cleanMemberNames
+          };
+        } catch (error) {
+          console.error("Error: could not write CSV file")
         }
-
-        // Use the member IDs from the members field to extract member information
-        const memberIds = team.members.map(member => member._id);
-        var cleanMemberNames = "";
-        //Loop through each memberId and retreive each needed data
-        for (let i = 0; i < memberIds.length; i++) {
-          var member = await User.findOne({ _id: memberIds[i] }).exec();
-          console.log("Name " + i + ": " + member.first_name);
-          cleanMemberNames += member.first_name + " " + member.last_name + " | "
-            + member.email + " | " + member.address + " " + member.city
-            + " " + member.zip + ", ";
-        }
-
-        //Get all timings 
-        var cleanTimings = "";
-        for (let i = 0; i < team.timings.length; i++) {
-          cleanTimings += team.timings[i] + " | ";
-        }
-
-        //Return all needed strings to be added into csvData
-        return {
-          team_number: team.team_number,
-          team_project_preferences: cleanProjectNames,
-          timings: cleanTimings,
-          members: cleanMemberNames
-        };
-
       }));
 
       //Create a csv file and input the csvData previousely compiled. 
       //Note: The delimiter ', ' adds the next data to a new column
-      const csv = json2csv(csvData, { fields, delimiter: ', ', defaultValue: '  ' });
+      const csv = json2csv(csvData, { fields, delimiter: '\t,', defaultValue: ' ' });
 
       //Add filename, and save to TeamUp/server/ file because thats is where you run backend features
       var fileName = 'final_teams_info.csv';
@@ -226,18 +252,16 @@ app.post('/', async (req, res) => {
     .catch(err => res.status(400).json({ error: err }));
 });
 
-// @route PUT api/team_submit
-// @description Team submission  - send teams emails with team info
+// @route POST api/team_submit
+// @description Team submission 
 // @access Public
 // @param [String] timings
-// @param [String] 
 // @param {Boolean} is_finalized
 app.put('/team_submit/:id', async (req, res) => {
   try {
     const updatedTeam = await Team.findByIdAndUpdate(req.params.id, {
       $set: {
         timings: req.body.timings,
-        team_project_preferences: req.body.team_project_preferences,
         is_finalized: 'true'
       }
     }, { new: true });
@@ -386,6 +410,7 @@ app.put('/join/:id', auth, async (req, res) => {
       old_team.save()
         .then(old_team => console.log("Removed user " + req.body.user_id + " from team " + old_team.id))
     }
+
   }
 
   user.team = team.id
@@ -403,4 +428,3 @@ app.put('/join/:id', auth, async (req, res) => {
 
 
 module.exports = app;
-

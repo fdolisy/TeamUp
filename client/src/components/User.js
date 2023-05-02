@@ -7,9 +7,13 @@ export const initialUserData = {
   first_name: "",
   last_name: "",
   email: "",
-  project_pref: [],
   skills: [],
+  project_details: [],
   team_id: "",
+  address: "",
+  city: "",
+  zip: "",
+  extra_information: "",
 };
 
 export function reducer(state, userData) {
@@ -21,9 +25,13 @@ export function reducer(state, userData) {
     first_name: userData.first_name,
     last_name: userData.last_name,
     email: userData.email,
-    project_pref: userData.project_pref,
+    project_details: userData.project_details,
     skills: userData.skills,
     team_id: userData.team_id,
+    address: userData.address,
+    city: userData.city,
+    zip: userData.zip,
+    extra_information: userData.extra_information,
   };
 }
 
