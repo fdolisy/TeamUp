@@ -47,8 +47,16 @@ app.get('/', (req, res) => {
             var user = await User.findById(id);
             return user;
           }))
+          var project_ids = team.team_project_preferences;
+          var project_details = await Promise.all(
+            project_ids.map(async (id) => {
+              var project = await Project.findById(id);
+              return project;
+            })
+          );
           team = team.toJSON()
           team.member_details = user_details;
+          team.project_details = project_details;
           return team;
         }))
         res.json(teams_details)
@@ -64,59 +72,77 @@ app.get('/', (req, res) => {
 app.get('/submit_all', async (req, res) => {
 
   try {
-    const teams = await Team.find().lean(); 
+    const teams = await Team.find().lean();
     try {
       //Headers of the csv file as well as what information we are looking at in the teams document
-      const fields = ['team_number', 'team_project_preferences', 'timings', 'members'];
-
+      //const fields = ['team_number', 'team_project_preferences',' ', ' ', ' ', ' ', ' ', ' ',' ', ' ', 'timings','', '','', 'members'];
+      //const fields = ['team_number', 'team_project_preferences','2nd', '3rd', '4th', '5th', '6th', '7th','8th', '9th', 'timings', 'members'];
+      const fields = ['team_number', 'team_project_preferences', , 'timings', , 'members'];
       //csvData contains all data being sent to the csv file
       const csvData = await Promise.all(teams.map(async team => {
-        
-        //Use the member IDs from the members field to extract member information
-        if (team.team_project_preferences[0] != null) {
-          const projectIds = team.team_project_preferences.map(project => project._id);
-          var cleanProjectNames = ""; 
-          for (let i = 0; i < projectIds.length; i++) {
-            var project = await Project.findOne({ _id: projectIds[i] }).exec();
-            cleanProjectNames += project.name + " ";
+
+        try {
+
+          try {
+            //Use the member IDs from the members field to extract member information
+            if (team.team_project_preferences[0] != null) {
+              const projectIds = team.team_project_preferences.map(project => project._id);
+              var cleanProjectNames = "";
+              for (let i = 0; i < projectIds.length; i++) {
+                var project = await Project.findOne({ _id: projectIds[i] }).exec();
+                cleanProjectNames += project.name + ", ";
+              }
+            }
+          } catch {
+            console.error("Could not get project");
           }
-        }
 
-        // Use the member IDs from the members field to extract member information
-        const memberIds = team.members.map(member => member._id); 
-        var cleanMemberNames = "";
-        //Loop through each memberId and retreive each needed data
-        for (let i = 0; i < memberIds.length; i++) {
-          var member = await User.findOne({ _id: memberIds[i] }).exec();
-          console.log("Name " + i + ": " + member.first_name);
-          cleanMemberNames += member.first_name + " " + member.last_name + " | "
-                            + member.email + " | " + member.address + " " + member.city 
-                            + " " + member.zip + ", ";
-        }
- 
-        //Get all timings 
-        var cleanTimings = "";
-        for (let i = 0; i < team.timings.length; i++) {
-          cleanTimings += team.timings[i] + " | ";
-        }
 
-        //Return all needed strings to be added into csvData
-        return {
-          team_number: team.team_number,
-          team_project_preferences: cleanProjectNames,
-          timings: cleanTimings,
-          members: cleanMemberNames
-        };
-      
+          try {
+            // Use the member IDs from the members field to extract member information
+            const memberIds = team.members.map(member => member._id);
+            var cleanMemberNames = "";
+            //Loop through each memberId and retreive each needed data
+            for (let i = 0; i < memberIds.length; i++) {
+              var member = await User.findOne({ _id: memberIds[i] }).exec();
+              cleanMemberNames += member.first_name + " " + member.last_name + " | "
+                + member.email + " | " + member.address + " " + member.city
+                + " " + member.zip + " | ";
+            }
+          } catch {
+            console.error("Could not get member");
+          }
+
+          try {
+            //Get all timings 
+            var cleanTimings = "";
+            for (let i = 0; i < team.timings.length; i++) {
+              cleanTimings += team.timings[i] + ", ";
+            }
+          } catch {
+            console.error("Could not get timing");
+          }
+
+
+          //Return all needed strings to be added into csvData
+          return {
+            team_number: team.team_number,
+            team_project_preferences: cleanProjectNames,
+            timings: cleanTimings,
+            members: cleanMemberNames
+          };
+        } catch (error) {
+          console.error("Error: could not write CSV file")
+        }
       }));
-      
+
       //Create a csv file and input the csvData previousely compiled. 
       //Note: The delimiter ', ' adds the next data to a new column
-      const csv = json2csv(csvData, { fields, delimiter: ', ', defaultValue: '  ' });
+      const csv = json2csv(csvData, { fields, delimiter: '\t,', defaultValue: ' ' });
 
       //Add filename, and save to TeamUp/server/ file because thats is where you run backend features
       var fileName = 'final_teams_info.csv';
-      fs.writeFileSync(fileName, csv, 'utf-8'); 
+      fs.writeFileSync(fileName, csv, 'utf-8');
 
       //send confirmation message and instructions on how to access the file
       res.send("Successfully created file: '" + fileName + "' inside your 'server' folder! If you need an updated file, please close out the file, and request again.");
@@ -134,8 +160,25 @@ app.get('/submit_all', async (req, res) => {
 // @access Public
 app.get('/:id', (req, res) => {
   Team.findById(req.params.id)
-    .then(team => res.json(team))
-    .catch(err => res.status(404).json({ noteamfound: err }));
+    .then(async team => {
+      var user_ids = team.members;
+      var project_ids = team.team_project_preferences;
+      var user_details = await Promise.all(user_ids.map(async (id) => {
+        var user = await User.findById(id);
+        return user;
+      }));
+
+      var project_details = await Promise.all(project_ids.map(async (id) => {
+        var project = await Project.findById(id);
+        return project;
+      }));
+
+      team = team.toJSON()
+      team.member_details = user_details;
+      team.project_preference_details = project_details;
+      res.json(team)
+    })
+    .catch(err => res.status(404).json({ noteamsfound: err }));
 });
 
 // @route POST api/teams
@@ -147,7 +190,6 @@ app.get('/:id', (req, res) => {
 // @param {String} team_password
 app.post('/', async (req, res) => {
   var team = req.body
-  console.log(req.body)
 
   if (!team.is_public) {
     // Make sure private teams include a password in the request
@@ -158,7 +200,7 @@ app.post('/', async (req, res) => {
 
     // Encrypt the team's password before saving it in the database
     encryptedPassword = await bcrypt.hash(team.team_password, 10).then();
-    team.team_password = encryptedPassword 
+    team.team_password = encryptedPassword
   }
 
   // Assign the team number sequentially based on how many teams have already been created
@@ -168,7 +210,45 @@ app.post('/', async (req, res) => {
   team.is_finalized = false
 
   Team.create(team)
-    .then(team => res.json({ msg: 'Team ' + team.id + ' added successfully' }))
+    .then(team => {
+      team.members.forEach(async member_id => {
+        var user = await User.findById(member_id)
+        user.save()
+          .then(user => console.log("Updated user " + user.id + " to store team ID " + team.id))
+
+        // if the user is already on a team, remove them from that team
+        if (user.team && user.team != team.id) {
+          var old_team = await Team.findById(user.team)
+
+          // if the user is on a finalized team already, do not allow them to join a new team
+          if (old_team.is_finalized) {
+            res.status(400).json({ mgs: 'User ' + user.id + ' is already on a finalized team and cannot join a new one' })
+            return
+          }
+
+          // remove user from their old team
+          team_without_user = []
+          for (let i = 0; i < old_team.members.length; i++) {
+            if (old_team.members[i] != user.id) {
+              team_without_user.push(old_team.members[i])
+            }
+          }
+
+          old_team.members = team_without_user
+
+          // if this user was the only member on that team, delete the old team completely
+          if (team_without_user.length == 0) {
+            old_team.delete()
+              .then(old_team => console.log("Deleted team " + old_team.id))
+          } else {
+            old_team.save()
+              .then(old_team => console.log("Removed user " + user.id + " from team " + old_team.id))
+          }
+        }
+        user.team = team.id
+      });
+      res.json({ msg: 'Team ' + team.id + ' added successfully' })
+    })
     .catch(err => res.status(400).json({ error: err }));
 });
 
@@ -218,7 +298,7 @@ async function displayTeamData(post) {
     + "This is the information we have from your submission: \n";
   display += "\n";
   //display project preferences
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < post.team_project_preferences.length; i++) {
     var projectID = post.team_project_preferences[i].toString();
     var project = await Project.findOne({ _id: projectID }).exec();
     display += "Project preference " + (1 + i) + ": " + project.name + "\n";

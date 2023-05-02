@@ -1,5 +1,5 @@
-import React, { useCallback }  from "react";
-// import { useNavigate } from "react-router-dom";
+import React, { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState, useContext, useEffect } from "react";
 import Select from "react-select";
@@ -37,6 +37,7 @@ const CreateTeam = () => {
   const user = useContext(UserContext);
   const [isPublic, setIsPublic] = useState(true);
   const [teamNumber, setTeamNum] = useState(0);
+  let navigate = useNavigate();
   function handleSubmit() {
     const preferences = new Array(
       selectedProject1,
@@ -49,7 +50,6 @@ const CreateTeam = () => {
       selectedProject8,
       selectedProject9
     );
-
 
     axios
       .post("api/teams", {
@@ -67,6 +67,9 @@ const CreateTeam = () => {
       .catch((error) => {
         console.log(error);
       });
+    setTimeout(() => {
+      navigate("/status");
+    }, 1000);
   }
 
   // projects
@@ -118,8 +121,42 @@ const CreateTeam = () => {
   };
 
   const handleProjectName = (index) => {
-    if (user.user.project_details[index] === null) return "Select...";
-    else return user.user.project_details[index].name;
+    if (user.user.project_details[index] === null) {
+      return "Select...";
+    } else {
+      switch (index) {
+        case 0:
+          handleProject1({ 'value': user.user.project_details[index]._id })
+          break;
+        case 1:
+          handleProject2({ 'value': user.user.project_details[index]._id })
+          break;
+        case 2:
+          handleProject3({ 'value': user.user.project_details[index]._id })
+          break;
+        case 3:
+          handleProject4({ 'value': user.user.project_details[index]._id })
+          break;
+        case 4:
+          handleProject5({ 'value': user.user.project_details[index]._id })
+          break;
+        case 5:
+          handleProject6({ 'value': user.user.project_details[index]._id })
+          break;
+        case 6:
+          handleProject7({ 'value': user.user.project_details[index]._id })
+          break;
+        case 7:
+          handleProject8({ 'value': user.user.project_details[index]._id })
+          break;
+        case 8:
+          handleProject9({ 'value': user.user.project_details[index]._id })
+          break;
+        default:
+          break;
+      }
+      return user.user.project_details[index].name;
+    }
   };
   useEffect(() => {
     axios
@@ -133,7 +170,7 @@ const CreateTeam = () => {
   }, []);
 
   return (
-    <div className="bg-offWhite">
+    <div className="bg-offWhite h-screen">
       <Navbar />
       <ToastContainer toastClassName="bg-green-500 text-white font-medium" />
       <div className="flex flex-col">

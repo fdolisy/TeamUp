@@ -15,6 +15,7 @@ export const initialUserData = {
   city: "",
   zip: "",
   extra_information: "",
+  team_id: "",
 };
 
 export function reducer(state, userData) {

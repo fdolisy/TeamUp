@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 
 const JoinExistingTeam = () => {
   const [teams, setTeams] = useState([]);
+  let navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -21,6 +22,7 @@ const JoinExistingTeam = () => {
 
   function handleClick(team) {
     console.log(`Clicked on project "${team.team_number}"`);
+    navigate(`/team_details`, { state: { team } });
   }
 
   return (
@@ -48,6 +50,12 @@ const JoinExistingTeam = () => {
             >
               Is Finalized
             </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Top Project
+            </th>
           </tr>
         </thead>
 
@@ -71,6 +79,11 @@ const JoinExistingTeam = () => {
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-500">
                   {team.is_finalized ? "Yes" : "No"}
+                </div>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <div className="text-sm text-gray-500">
+                  {team.members.length}
                 </div>
               </td>
             </tr>

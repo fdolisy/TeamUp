@@ -5,25 +5,31 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import UserContext from "../components/User";
+import AutoAwesomeMosaicIcon from "@mui/icons-material/AutoAwesomeMosaic";
 
 export default function Navbar() {
   let navigate = useNavigate();
   const { setUser, user } = useContext(UserContext);
-  const apiURL = "http://csa-4485-02.utdallas.edu/api/";
+  const apiURL = "http://csa-4485-02.utdallas.edu/api";
 
+  // navigation buttons 
   function handleClick() {
     navigate("/status");
   }
   function profile() {
     navigate("/dashboard");
   }
-  function logOut() {
+  function team() {
+    navigate("/team_dashboard");
+  }
+  // logs out the user and returns to the home page
+  async function logOut() {
 
-	  var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Logout", "popup", 'width=600,height=600');
-	popup.blur();
-	  window.focus();
+    var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Logout", "popup", 'width=600,height=600');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    popup.close();
 
     const authAxios = axios.create({
       baseURL: apiURL,
@@ -50,6 +56,7 @@ export default function Navbar() {
       <div className="flex justify-between place-items-center relative container text-offWhite">
         <div
           onClick={handleClick}
+          style={{ cursor: "pointer" }}
           className="flex place-items-center relative space-x-5 rounded-xl"
         >
           <GroupsIcon sx={{ fontSize: 65 }} />
@@ -61,6 +68,13 @@ export default function Navbar() {
               className="text-offWhite"
               fontSize="large"
               onClick={profile}
+            />
+          </IconButton>
+          <IconButton aria-label="web-access">
+            <AutoAwesomeMosaicIcon
+              className="text-offWhite"
+              fontSize="large"
+              onClick={team}
             />
           </IconButton>
           <IconButton aria-label="settings">

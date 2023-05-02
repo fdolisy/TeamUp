@@ -48,7 +48,7 @@ function sendCsvFile() {
         // specified mail options
         let mailOptions = {
             from: process.env.GMAIL_USER,
-            to: 'cmb180010@utdallas.edu',
+            to: process.env.ADMIN_EMAIL,
             subject: "Capstone Team Preferences",
             text: "All team pairings can be found in the linked file",
             attachments: [
@@ -74,4 +74,3 @@ module.exports = {
     sendCsvFile: sendCsvFile
 };
 
-module.exports = sendEmail;

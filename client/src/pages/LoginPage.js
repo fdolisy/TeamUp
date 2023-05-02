@@ -68,18 +68,97 @@ const LoginPage = () => {
         setShowAlert(true);
       });
   }
-  function HandleSSO() {
+
+  async function isLoggedIn() {
+    var result = await fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          return '';
+        }
+        return response.text();
+      })
+      .then(async data => {
+        if (data.includes('mail')) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    return result;
+  }
+
+  async function loginPopup() {
     var popup = window.open("https://csa-4485-02.utdallas.edu/Shibboleth.sso/Login", "popup", 'width=600,height=600');
-    popup.blur();
-    window.focus();
-    //window.location.href = "https://csa-4485-02.utdallas.edu/Shibboleth.sso/Login";
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(async data => {
+        if (data.includes('mail')) {
+          popup.close();
+          navigate("/status");
+        }
+      });
+  }
+
+  async function HandleSSO() {
+    // Check whether the user has already signed in with SSO
+    fetch('http://csa-4485-02.utdallas.edu/Shibboleth.sso/Session')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.text();
+      })
+      .then(async data => {
+        if (data.includes('mail')) {
+          const attributes = parse_attributes(data)
+          // try to login this user
+          axios
+            .post(`api/login`, {
+              email: attributes[2],
+              password: "SSO",
+            })
+            .then((response) => {
+              setUser({
+                ...user,
+                token: response.data.token,
+                id: response.data.userID,
+                logged_in: true,
+              });
+              navigate("/status");
+            })
+            .catch(async (error) => {
+              await loginPopup();
+              var isLoginDone = false;
+              while (!isLoginDone) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                isLoginDone = await isLoggedIn();
+              }
+            });
+        } else {
+          await loginPopup();
+          var isLoginDone = false;
+          while (!isLoginDone) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            isLoginDone = await isLoggedIn();
+          }
+        }
+      })
+      .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+      });
   }
 
   function HandleSignUp() {
     navigate("/profile");
   }
   return (
-    <div className="bg-offWhite">
+    <div className="bg-offWhite h-screen">
       <Navbar />
       <div className="flex h-screen">
         <div className="flex flex-col m-auto">

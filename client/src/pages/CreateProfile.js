@@ -15,7 +15,7 @@ const projectOptions = [];
 
 // get project list
 axios
-  .get("api/projects/")
+  .get("http://csa-4485-02.utdallas.edu/api/projects/")
   .then((response) => {
     const project_objects = new Array(response.data);
 
@@ -75,17 +75,17 @@ export default function CreateProfile() {
           "!"
         );
         setTimeout(() => {
-	  setUser({
-           ...user,
-           token: response.data.token,
-           id: response.data._id,
-           logged_in: true,
+          setUser({
+            ...user,
+            token: response.data.token,
+            id: response.data._id,
+            logged_in: true,
           });
           navigate("/status");
         }, 1000);
       })
       .catch((error) => {
-        toast.error("Please enter try again!");
+        toast.error("Please try again!");
       });
   }
 
